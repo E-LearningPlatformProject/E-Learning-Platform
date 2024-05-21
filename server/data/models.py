@@ -90,41 +90,32 @@ class Key:
     KEY = getenv('KEY')
 
 class Tag(BaseModel):
-    id:int
+    #id:int
     title:str
 
     @classmethod
-    def from_query_result(cls, id, title):
+    def from_query_result(cls, title):
         return cls(
-            id = id,
+       
             title = title)
 
-class Course_UnAutUser(BaseModel):
+
+class CoursesTagsResponeModel(BaseModel):
     id:int
     title: str
     description: str
-    
+    level:str
+    tags: str | None
 
     @classmethod
-    def from_query_result(cls, id, title, description):
+    def from_query_result(cls, id, title, description,level, tags):
         return cls(
             id = id,
             title = title,
-            description = description
-            )
+            description = description,
+            level = level,
+            tags = tags)
 
-
-class CourseResponseModel_UnAutUser(BaseModel):
-    course: Course_UnAutUser
-    tags: list[Tag]
-    
-
-    @classmethod
-    def from_query_result(cls, course,tag):
-        return cls(
-            course = course,
-            tag = tag
-            )
 
 class CourseResponseModel_StUser(BaseModel):
     id:int
@@ -159,9 +150,19 @@ class CourseResponseModel_TchUser(BaseModel):
             )
 
 class CreateCourse(BaseModel):
+    id:int
     title: str
     description: str
-    level: str
-    tags: list[Tag]
+    level:str
+    tags: str | None
+
+    @classmethod
+    def from_query_result(cls, id, title, description,level, tags):
+        return cls(
+            id = id,
+            title = title,
+            description = description,
+            level = level,
+            tags = tags)
 
     

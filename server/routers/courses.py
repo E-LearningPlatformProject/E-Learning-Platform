@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
 from services import courses_service, tags_service
-from data.models import CourseResponseModel_UnAutUser, Course_UnAutUser, Role, CreateCourse
+from data.models import Role, CreateCourse
 
 
 
@@ -19,44 +19,37 @@ def get_courses(
     search: str | None = None,
     x_token: Optional[str] = Header(None)):
 
+    if not x_token:
+        data = list(courses_service.all_non_premium(search, skip, take))    
 
-    #if not x_token:
-    #    courses_data = list(courses_service.all_non_private(search, skip, take))
-    #    
-    #    data = []
-    #    for courses in courses_data:
-    #        data.append(CourseResponseModel_UnAutUser(course = courses , tags=tags_service.get_tags_by_course_id(courses.id)))
-    #    
+    else:
+        user = get_user_or_raise_401(x_token)
         
+        if user.role == Role.ADMIN:
+            data = courses_service.all(search, skip, take)
 
-    #else:
-        #user = get_user_or_raise_401(x_token)
-
-        #if user.role == Role.ADMIN:
-            #data = courses_service.all(search, skip, take)
-        #elif user.role == Role.TEACHER:
-            #data = courses_service.t_private(search, 2, skip, take)
-        #else:
-    data = courses_service.all(search, skip, take)
+        elif user.role == Role.TEACHER:
+            data = courses_service.t_private(search, user.id, skip, take)
+        
+        else:
+            data = courses_service.all_non_hidden(search, skip, take)
 
 
     if sorting and (sorting == 'asc' or sorting == 'desc'):
         return courses_service.sorting(data, reverse=sorting == 'desc', attribute=sort_by)
     
     return data
-    return CourseResponseModel_UnAutUser(course = data , tags=tags_data)
-    #return (CourseResponseModel_UnAutUser.from_query_result(*row, tags) for row in data)
+
 
 @courses_router.post('/')
 def create_courses(course:CreateCourse, x_token: Optional[str] = Header(None)):
     
-    #if not x_token:
-    #    return Unauthorized('Go home')
-    for tag in course.tags:
-        print(tag.title)
-    tags = tags_service.get_tags_by_name(course.tags)
+    if not x_token:
+        return Unauthorized('Go home')
+
+    user = get_user_or_raise_401(x_token)
     
-    course = courses_service.create(course, 2)
+    course = courses_service.create(course, user.id)
 
     return course
     
