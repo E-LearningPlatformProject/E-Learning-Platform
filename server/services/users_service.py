@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query
-from data.models import Role, Students, User, Key
+from data.models import Role, StudentInfo, Students, TeacherInfo, User, Key
 from mariadb import IntegrityError
 from datetime import datetime, timezone, timedelta
 import jwt
@@ -19,6 +19,30 @@ def find_by_email(email: str) -> User | None:
         (email,))
 
     return next((User.from_query_result(*row) for row in data), None)
+
+
+def find_student_info(email: str) -> User | None:
+    data = read_query(
+        '''
+        SELECT students.id, users.email, users.password, users.role, students.first_name, students.last_name
+        FROM users
+        JOIN students ON users.id = students.users_id
+        WHERE users.email = ?
+        ''', (email,))
+    
+    return next((StudentInfo.from_query_result(*row) for row in data), None)
+
+
+def find_teacher_info(email: str) -> User | None:
+    data = read_query(
+        '''
+        SELECT teachers.id, users.email, users.password, users.role, teachers.first_name, teachers.last_name, teachers.phone_number, teachers.linked_in_account, teachers.is_approved
+        FROM users
+        JOIN teachers ON users.id = teachers.users_id
+        WHERE users.email = ?
+        ''', (email,))
+    
+    return next((TeacherInfo.from_query_result(*row) for row in data), None)
 
 
 def try_login(email: str, password: str) -> User | None:
@@ -108,4 +132,11 @@ def from_token(token: str) -> User | None:
     except jwt.ExpiredSignatureError:
         return False
     
-    return find_by_email(decoded['email'])
+    user = find_by_email(decoded['email'])
+        
+    if user.role == 'student':
+        return find_student_info(decoded['email'])
+    elif user.role == 'teacher':
+        return find_teacher_info(decoded['email'])
+    else:
+        return find_by_email(decoded['email'])
