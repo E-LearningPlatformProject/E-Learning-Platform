@@ -11,13 +11,14 @@ def get_tags_by_course_id(course_id: int):
             )
 
     return (Tag.from_query_result(*row) for row in data)
-    return next((Tag(title=title) for title in data), None)
+
 
 def get_tags_by_name(tags: list):
+    el = len(tags)
     data = read_query(
-        '''SELECT id
+        f'''SELECT id
             FROM tags 
-            WHERE title in (?)''', (tuple(tags),)
+            WHERE title in ({(el * '?, ').removesuffix(', ')})''', tuple(tags)
             )
     
     return data

@@ -5,7 +5,7 @@ from data.models import LoginData, Students, Teachers, User
 from services import users_service
 
 
-users_router = APIRouter(prefix='/users/сту')
+users_router = APIRouter(prefix='/users')
 
 
 @users_router.post('/login')
