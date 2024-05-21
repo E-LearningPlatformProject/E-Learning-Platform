@@ -6,7 +6,7 @@ import jwt
 from hashlib import sha256
 
 
-_EXP_TIME_TOKEN = 2
+_EXP_TIME_TOKEN = 4
 
 def _hash_password(password: str):
 
