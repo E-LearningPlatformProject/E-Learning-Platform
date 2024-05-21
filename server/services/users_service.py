@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query
-from data.models import Role, User, Key
+from data.models import Role, Students, User, Key
 from mariadb import IntegrityError
 from datetime import datetime, timezone, timedelta
 import jwt
@@ -13,33 +13,64 @@ def _hash_password(password: str):
     return sha256(password.encode('utf-8')).hexdigest()
 
 
-def find_by_username(username: str) -> User | None:
+def find_by_email(email: str) -> User | None:
     data = read_query(
-        'SELECT id, username, password, role, email FROM users WHERE username = ?',
-        (username,))
+        'SELECT id, email, password, role FROM users WHERE email = ?',
+        (email,))
 
     return next((User.from_query_result(*row) for row in data), None)
 
 
-def try_login(username: str, password: str) -> User | None:
-    user = find_by_username(username)
+def try_login(email: str, password: str) -> User | None:
+    user = find_by_email(email)
 
     hashed_password = _hash_password(password)
 
     return user if user and user.password == hashed_password else None
 
 
-def create(username: str, password: str, email) -> User | None:
+def create_student(email: str, password: str, first_name: str, last_name: str) -> User | None:
     
     hashed_password = _hash_password(password)
 
     try:
         generated_id = insert_query(
-            'INSERT INTO users(username, password, role, email) VALUES (?,?,?,?)',
-            (username, hashed_password, Role.USER, email))
+            'INSERT INTO users(email, password, role) VALUES (?,?,?)',
+            (email, hashed_password, Role.STUDENT))
 
-        return User(id=generated_id, username=username, password='xxxxxxxxx', role=Role.USER,email=email)
+        generated_student_id = insert_query(
+            'INSERT INTO students(users_id, first_name, last_name) VALUES (?,?,?)',
+            (generated_id, first_name, last_name)
+        )
 
+        return User(id=generated_id, email=email, password='xxxxxxxxx', role=Role.STUDENT)
+    except IntegrityError:
+        # mariadb raises this error when a constraint is violated
+        # in that case we have duplicate usernames
+        return None
+    
+
+def create_teacher(email: str, 
+                   password: str, 
+                   first_name: str, 
+                   last_name: str,
+                   phone_number,
+                   linked_in_account) -> User | None:
+    
+    hashed_password = _hash_password(password)
+
+    try:
+        generated_id = insert_query(
+            'INSERT INTO users(email, password, role) VALUES (?,?,?)',
+            (email, hashed_password, Role.TEACHER))
+
+        generated_teacher_id = insert_query(
+            '''INSERT INTO teachers(users_id, first_name, last_name, phone_number, linked_in_account) 
+            VALUES (?,?,?,?,?)''',
+            (generated_id, first_name, last_name, phone_number, linked_in_account)
+        )
+
+        return User(id=generated_id, email=email, password='xxxxxxxxx', role=Role.TEACHER)
     except IntegrityError:
         # mariadb raises this error when a constraint is violated
         # in that case we have duplicate usernames
@@ -49,7 +80,7 @@ def create(username: str, password: str, email) -> User | None:
 def create_token(user: User) -> str:
 
     load = {"id":user.id,
-           "username":user.username,
+           "email":user.email,
            "role":user.role,
            "iat": datetime.now(tz=timezone.utc),
            "exp":(datetime.now(tz=timezone.utc) + timedelta(hours=_EXP_TIME_TOKEN))
@@ -67,8 +98,8 @@ def is_authenticated(token: str) -> bool:
         return False
 
     return any(read_query(
-        'SELECT 1 FROM users where id = ? and username = ?',
-        (decoded['id'], decoded['username'])))
+        'SELECT 1 FROM users where id = ? and email = ?',
+        (decoded['id'], decoded['email'])))
 
 
 def from_token(token: str) -> User | None:
@@ -77,4 +108,4 @@ def from_token(token: str) -> User | None:
     except jwt.ExpiredSignatureError:
         return False
     
-    return find_by_username(decoded['username'])
+    return find_by_email(decoded['email'])

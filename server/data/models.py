@@ -4,38 +4,36 @@ from pydantic import BaseModel, StringConstraints, field_validator
 from re import match
 from os import getenv
 
-class Role:
-    STUDENT = 'student'
-    TEACHER = 'teacher'
-    ADMIN = 'admin'
 
-TUsername = Annotated[str, StringConstraints(pattern=r'^\w{2,30}$')]
 TEmail = Annotated[str, StringConstraints(pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')]
+
+class Role:
+    ADMIN = 'admin'
+    TEACHER = 'teacher'
+    STUDENT = 'student'
+
 
 class User(BaseModel):
     id: int | None
-    username: str
-    password: str
-    role: str
     email:str
-
-    def is_admin(self):
-        return self.role == Role.ADMIN
+    password: str
+    
+    role:str
 
     @classmethod
-    def from_query_result(cls, id, username, password, role, email):
+    def from_query_result(cls, id, email, password, role):
         return cls(
             id=id,
-            username=username,
+            email=email,
             password=password,
-            role=role,
-            email=email)
+            role=role
+            )
     
-    @field_validator('username')
-    def validate_username(cls, username:str):
-        pattern = r'^\w{2,30}$'
+    @field_validator('email')
+    def validate_email(cls, email:str):
+        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
         
-        return username if match(pattern, username) is not None else False
+        return email if match(pattern, email) is not None else False
 
     
     @field_validator('password')
@@ -47,15 +45,45 @@ class User(BaseModel):
         
         return password if match(pattern, password) is not None else False
     
-    @field_validator('email')
-    def validate_email(cls, email:str):
-        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        
-        return email if match(pattern, email) is not None else False
+class Teachers(BaseModel):
+    id:int
+    phone_number:int 
+    linked_in_account:str 
+    is_approved:bool 
+    users_id:int
+    first_name:str
+    last_name:str
+    
+    @classmethod
+    def from_query_result(cls, id, phone_number, linked_in_account, is_approved, users_id, first_name, last_name):
+        return cls(
+            id=id,
+            phone_number=phone_number,
+            linked_in_account=linked_in_account,
+            is_approved=is_approved,
+            users_id=users_id,
+            first_name=first_name,
+            last_name=last_name
+            )
+    
+class Students(BaseModel):
+    id:int
+    users_id:int
+    first_name:str
+    last_name:str
 
+    @classmethod
+    def from_query_result(cls, id, users_id, first_name, last_name):
+        return cls(
+            id=id,
+            users_id=users_id,
+            first_name=first_name,
+            last_name=last_name
+        )
+    
 
 class LoginData(BaseModel):
-    username: TUsername
+    email: TEmail
     password: str
 
 class Key:
