@@ -23,10 +23,11 @@ def login(data: LoginData):
 def user_info(x_token: str | None = Header()):
     if  not x_token :
         return BadRequest('No No')
+    
     return get_user_or_raise_401(x_token)
 
 
-@users_router.post('/register/student')
+@users_router.post('/register/student',)
 def register(user_data: User, student_data: Students):
 
     if user_data.email and user_data.password:
