@@ -142,3 +142,81 @@ class LoginData(BaseModel):
 
 class Key:
     KEY = getenv('KEY')
+
+class Tag(BaseModel):
+    #id:int
+    title:str
+
+    @classmethod
+    def from_query_result(cls, title):
+        return cls(
+       
+            title = title)
+
+
+class CoursesTagsResponeModel(BaseModel):
+    id:int
+    title: str
+    description: str
+    level:str
+    tags: str | None
+
+    @classmethod
+    def from_query_result(cls, id, title, description,level, tags):
+        return cls(
+            id = id,
+            title = title,
+            description = description,
+            level = level,
+            tags = tags)
+
+
+class CourseResponseModel_StUser(BaseModel):
+    id:int
+    title: str
+    description: str
+    level: str
+    author_id:int
+
+    @classmethod
+    def from_query_result(cls, id, title, description, level, author_id):
+        return cls(
+            id = id,
+            title = title,
+            description = description,
+            level = level,
+            author_id = author_id
+            )
+    
+class CourseResponseModel_TchUser(BaseModel):
+    id:int
+    title: str
+    description: str
+    level: str
+
+    @classmethod
+    def from_query_result(cls, id, title, description, level):
+        return cls(
+            id = id,
+            title = title,
+            description = description,
+            level = level
+            )
+
+class CreateCourse(BaseModel):
+    id:int
+    title: str
+    description: str
+    level:str
+    tags: str | None
+
+    @classmethod
+    def from_query_result(cls, id, title, description,level, tags):
+        return cls(
+            id = id,
+            title = title,
+            description = description,
+            level = level,
+            tags = tags)
+
+    
