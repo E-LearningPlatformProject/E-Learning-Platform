@@ -81,6 +81,60 @@ class Students(BaseModel):
             last_name=last_name
         )
     
+class StudentInfo(BaseModel):
+    id: int
+    email: str
+    password: str
+    role: str
+    first_name: str
+    last_name: str
+
+    @classmethod
+    def from_query_result(cls, id, email, password, role, first_name, last_name):
+        return cls(
+            id=id,
+            email=email,
+            password=password,
+            role=role,
+            first_name=first_name,
+            last_name=last_name
+        )
+
+class TeacherInfo(BaseModel):
+    id: int
+    email: str
+    password: str
+    role: str
+    first_name: str
+    last_name: str
+    phone_number: int
+    linked_in_account: str
+    is_approved: bool
+
+    @classmethod
+    def from_query_result(cls, id, 
+                        email,
+                        password, 
+                        role, 
+                        first_name, 
+                        last_name, 
+                        phone_number,
+                        linked_in_account,
+                        is_approved):
+        
+        return cls(
+            id=id,
+            email=email,
+            password=password,
+            role=role,
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            linked_in_account=linked_in_account,
+            is_approved=is_approved
+        )
+
+
 
 class LoginData(BaseModel):
     email: TEmail
