@@ -101,7 +101,7 @@ def create(course: CreateCourse, author_id:int):
         'insert into courses(title, description, level, author_id) values(?,?,?,?)',
         (course.title, course.description, course.level, author_id))
 
-    course_id = generated_id
+    course.id = generated_id
     
     tags = get_tags_by_name(course.tags.split(','))
     if tags:
