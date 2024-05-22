@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import CoursesTagsResponeModel, CreateCourse, CourseResponseModel_StUser, CourseResponseModel_TchUser
+from data.models import CoursesTagsResponeModel, CreateCourse, Course
 from services.tags_service import get_tags_by_name
 
 def all_non_premium(search:str, skip:int, take:int):
@@ -40,8 +40,8 @@ def all_non_hidden(search:str, skip:int, take:int):
     else:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
-                          join courses_has_tags as ct on c.id = ct.course_id
-                          join tags as t on t.id = ct.tag_id
+                          left join courses_has_tags as ct on c.id = ct.course_id
+                          left join tags as t on t.id = ct.tag_id
                           where c.hidden = 0 and c.title like ?
                           group by c.title
                           order by c.id
@@ -53,8 +53,8 @@ def t_private(search:str, teacher_id, skip:int, take:int):
     if search is None:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
-                          join courses_has_tags as ct on c.id = ct.course_id
-                          join tags as t on t.id = ct.tag_id 
+                          left join courses_has_tags as ct on c.id = ct.course_id
+                          left join tags as t on t.id = ct.tag_id 
                           where author_id = ?
                           group by c.title
                           order by c.id
@@ -63,8 +63,8 @@ def t_private(search:str, teacher_id, skip:int, take:int):
     else:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
-                          join courses_has_tags as ct on c.id = ct.course_id
-                          join tags as t on t.id = ct.tag_id 
+                          left join courses_has_tags as ct on c.id = ct.course_id
+                          left join tags as t on t.id = ct.tag_id 
                           where c.title like ? and author_id = ?
                           group by c.title
                           order by c.id
@@ -85,8 +85,8 @@ def all(search:str, skip:int, take:int):
     else:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
-                          join courses_has_tags as ct on c.id = ct.course_id
-                          join tags as t on t.id = ct.tag_id
+                          left join courses_has_tags as ct on c.id = ct.course_id
+                          left join tags as t on t.id = ct.tag_id
                           where c.title like ?
                           group by c.title
                           order by c.id
@@ -115,6 +115,41 @@ def create(course: CreateCourse, author_id:int):
             {(el * '(?,?), ').removesuffix(', ')}''',
             tuple(CId_TId))
 
-
-
     return course
+
+def update(old: Course, new: Course):
+    merged = Course(
+        id=old.id,
+        title=new.title or old.title,
+        description=new.description or old.description,
+        level=new.level or old.level,
+        hidden= new.hidden or old.hidden,
+        tags = new.tags or old.tags
+        )
+
+    update_query(
+        '''UPDATE Courses
+         SET
+           title = ?, description = ?, level = ?, hidden = ?
+           WHERE id = ? 
+        ''',
+        (merged.title, merged.description, merged.level,merged.hidden, merged.id))
+
+    return merged
+
+def exists(id: int) -> bool:
+    return any(
+        read_query(
+            'select id from courses where id = ?',
+            (id,)))
+
+def get_by_id(id: int):
+    data = read_query('''select c.id, c.title, c.description, level, hidden, GROUP_CONCAT(t.title) as tags
+                          from courses as c
+                          left join courses_has_tags as ct on c.id = ct.course_id
+                          left join tags as t on t.id = ct.tag_id
+                          where c.id = ?
+                          group by c.title''', (id,))
+
+    return next((Course(id=id, title=title, description=description, level = level, hidden = hidden, tags = tags)\
+                  for id, title, description, level, hidden, tags in data), None)
