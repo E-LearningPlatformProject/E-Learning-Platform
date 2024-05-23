@@ -22,3 +22,18 @@ def get_tags_by_name(tags: list):
             )
     
     return data
+
+def create(tags: list, course_id:int):
+    if tags:
+        el = len(tags)
+        CId_TId = []
+        for tag_id in tags:
+            CId_TId.extend([course_id,tag_id[0]])
+
+        insert_query(
+            f'''insert into courses_has_tags(course_id, tag_id) values
+            {(el * '(?,?), ').removesuffix(', ')}''',
+            tuple(CId_TId))
+        
+def delete(course_id:int):
+    update_query('DELETE FROM courses_has_tags WHERE course_id = ?', (course_id,))

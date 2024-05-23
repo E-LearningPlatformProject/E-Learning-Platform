@@ -171,38 +171,6 @@ class CoursesTagsResponeModel(BaseModel):
             tags = tags)
 
 
-class CourseResponseModel_StUser(BaseModel):
-    id:int
-    title: str
-    description: str
-    level: str
-    author_id:int
-
-    @classmethod
-    def from_query_result(cls, id, title, description, level, author_id):
-        return cls(
-            id = id,
-            title = title,
-            description = description,
-            level = level,
-            author_id = author_id
-            )
-    
-class CourseResponseModel_TchUser(BaseModel):
-    id:int
-    title: str
-    description: str
-    level: str
-
-    @classmethod
-    def from_query_result(cls, id, title, description, level):
-        return cls(
-            id = id,
-            title = title,
-            description = description,
-            level = level
-            )
-
 class CreateCourse(BaseModel):
     id:int
     title: str
@@ -219,8 +187,28 @@ class CreateCourse(BaseModel):
             level = level,
             tags = tags)
 
+class Course(BaseModel):
+    id:int
+    title: str
+    description: str
+    level:str
+    hidden:bool
+    author_id: int
+    tags: str | None
 
-class Enrollments(BaseModel):
+    @classmethod
+    def from_query_result(cls, id, title, description, level, hidden, author_id, tags):
+        return cls(
+            id=id,
+            title = title,
+            description = description,
+            level = level,
+            hidden = hidden,
+            author_id = author_id,
+            tags = tags)
+
+      
+    class Enrollments(BaseModel):
     course_id: int
     student_id: int
 
