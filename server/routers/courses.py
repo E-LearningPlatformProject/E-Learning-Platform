@@ -79,6 +79,9 @@ def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header
     if old_course == None:
         return BadRequest(f'Course with {course_id} doesn\'t exist!')
     
+    if user.id != old_course.author_id:
+        return Unauthorized('You are not authorized.')
+    
     course = courses_service.update(old_course, course)
 
     return course

@@ -193,14 +193,16 @@ class Course(BaseModel):
     description: str
     level:str
     hidden:bool
+    author_id: int
     tags: str | None
 
     @classmethod
-    def from_query_result(cls, id, title, description, level, hidden, tags):
+    def from_query_result(cls, id, title, description, level, hidden, author_id, tags):
         return cls(
             id=id,
             title = title,
             description = description,
             level = level,
             hidden = hidden,
+            author_id = author_id,
             tags = tags)
