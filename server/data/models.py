@@ -219,4 +219,13 @@ class CreateCourse(BaseModel):
             level = level,
             tags = tags)
 
-    
+
+class Enrollments(BaseModel):
+    course_id: int
+    student_id: int
+
+    @classmethod
+    def from_query_result(cls, course_id, student_id):
+        return cls(
+            course_id = course_id,
+            student_id = student_id)

@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Role, StudentInfo
+from data.models import Enrollments, StudentInfo, Students, CreateCourse
 from hashlib import sha256
 
 def change_account_info(old: StudentInfo, new: StudentInfo):
@@ -25,4 +25,15 @@ def change_account_info(old: StudentInfo, new: StudentInfo):
 
 
     return merged
+
+
+def enroll_student(course_id: int, student_id: int) -> Enrollments:
+    insert_query('INSERT INTO enrollments (courses_id, students_id) VALUES (?, ?)', 
+                (course_id, student_id))
+                
+    return 'Student\'s enrollment requested!'
+    
+    
+
+
 
