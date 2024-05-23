@@ -27,3 +27,10 @@ def change_account_info(old: TeacherInfo, new: TeacherInfo):
         (merged.first_name, merged.last_name, merged.phone_number, merged.linked_in_account, merged.id, merged.is_approved))
 
     return merged
+
+def check_if_is_approved(teacher_id):
+    data = read_query('''select is_approved
+                      from teachers
+                      where id = ?''',(teacher_id,))
+    
+    return True if data[0][0]== 1 else False

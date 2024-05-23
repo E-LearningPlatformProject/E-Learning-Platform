@@ -3,8 +3,8 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
-from services import courses_service, tags_service
-from data.models import Role, CreateCourse
+from services import courses_service, teachers_service
+from data.models import Role, CreateCourse, Course
 
 
 
@@ -45,11 +45,47 @@ def get_courses(
 def create_courses(course:CreateCourse, x_token: Optional[str] = Header(None)):
     
     if not x_token:
-        return Unauthorized('Go home')
+        return Unauthorized('You are not authorized')
 
     user = get_user_or_raise_401(x_token)
+
+    if user.role != Role.TEACHER:
+        return Forbidden('Only teacher can create course!')
     
+    data = teachers_service.check_if_is_approved(user.id)
+    if not data:
+        return Forbidden('You registration is not approved, yet!')
+
     course = courses_service.create(course, user.id)
 
     return course
+
+@courses_router.put('/{course_id}')
+def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header(None)):
     
+    if not x_token:
+        return Unauthorized('You are not authorized.')
+    
+    #if not courses_service.exists(course_id):
+    #    return BadRequest(f'Course with {course_id} doesn\'t exist!')
+    
+    user = get_user_or_raise_401(x_token)
+
+    if user.role == Role.STUDENT:
+        return Forbidden('Only teacher or admin can update course!')
+    
+    old_course = courses_service.get_by_id(course_id)
+
+    if old_course == None:
+        return BadRequest(f'Course with {course_id} doesn\'t exist!')
+    
+    if user.id != old_course.author_id:
+        return Unauthorized('You are not authorized.')
+    
+    course = courses_service.update(old_course, course)
+
+    return course
+    
+
+# To do
+#@courses_router.delete('/{course_id}')
