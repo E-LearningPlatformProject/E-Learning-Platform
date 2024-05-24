@@ -158,3 +158,10 @@ def get_course_authorID(course_id:int):
                         where id = ?''', (course_id,))
     
     return data[0][0]
+
+def is_hidden(id: int) -> bool:
+    data = read_query(
+            'select hidden from courses where id = ?',
+            (id,))
+    
+    return True if data[0][0] == True else False

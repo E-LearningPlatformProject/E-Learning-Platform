@@ -8,6 +8,45 @@ from services import courses_service, sections_service
 
 section_router = APIRouter(prefix='/sections')
 
+#@section_router.get('/{course_id}')
+#def get_sections(course_id:int, x_token: Optional[str] = Header(None)):
+#    if not x_token:
+#        return Unauthorized('You are not authorized')
+#    
+#    user = get_user_or_raise_401(x_token)
+#
+#    if not courses_service.exists(course_id):
+#        return BadRequest(F'Course with ID: {course_id} doesn\'t exist!')
+#    
+#    if courses_service.is_hidden(course_id) and user.role == Role.STUDENT:
+#        return Forbidden('You don\'t have permission to view those sections!')
+#    
+#    return sections_service.get_sections(course_id)
+
+@section_router.get('/{section_id}')
+def get_section(section_id:int, x_token: Optional[str] = Header(None)):
+    
+    if not x_token:
+        return Unauthorized('You are not authorized')
+    
+    user = get_user_or_raise_401(x_token)
+
+    section = sections_service.get_by_id(section_id)
+
+    if section == None:
+        return BadRequest(F'Section with ID: {section_id} doesn\'t exist!')
+    
+    if courses_service.is_hidden(section.course_id) and user.role == Role.STUDENT:
+        return Forbidden('You don\'t have permission to view those sections!')
+
+    if not sections_service.check_if_student_is_enrolled(section.course_id, user.id):
+        return Unauthorized('You need to enroll for this course to view this section!')
+    
+    # Todo - check if progress created, if no create
+    
+    return section
+
+
 @section_router.post('/{course_id}')
 def create_section(section:Section, course_id:int, x_token: Optional[str] = Header(None)):
     
