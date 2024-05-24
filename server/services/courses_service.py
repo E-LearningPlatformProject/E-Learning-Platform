@@ -152,3 +152,12 @@ def get_by_id(id: int):
 
     return next((Course(id=id, title=title, description=description, level = level, hidden = hidden, author_id = author_id, tags = tags)\
                   for id, title, description, level, hidden, author_id, tags in data), None)
+
+def get_teacher_email(course_id):
+    data = read_query('''select email
+                from users as u
+                join teachers as t on u.id = t.users_id
+                join courses as c on c.author_id = t.id
+                where c.id = ?''', (course_id,))
+    
+    return data[0][0]

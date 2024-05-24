@@ -94,7 +94,7 @@ def create_teacher(email: str,
             (generated_id, first_name, last_name, phone_number, linked_in_account)
         )
 
-        return User(id=generated_id, email=email, password='xxxxxxxxx', role=Role.TEACHER)
+        return User(id=generated_teacher_id, email=email, password='xxxxxxxxx', role=Role.TEACHER)
     except IntegrityError:
         # mariadb raises this error when a constraint is violated
         # in that case we have duplicate usernames

@@ -5,7 +5,7 @@ from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
 from services import courses_service, teachers_service
 from data.models import Role, CreateCourse, Course
-
+from data.send_mail import send_email
 
 
 courses_router = APIRouter(prefix='/courses')

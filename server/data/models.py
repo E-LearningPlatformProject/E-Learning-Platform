@@ -7,6 +7,9 @@ from os import getenv
 
 TEmail = Annotated[str, StringConstraints(pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')]
 
+class AdminEmail:
+    _EMAIL = 'admin@admin.com'
+
 class Role:
     ADMIN = 'admin'
     TEACHER = 'teacher'
@@ -208,7 +211,7 @@ class Course(BaseModel):
             tags = tags)
 
       
-    class Enrollments(BaseModel):
+class Enrollments(BaseModel):
     course_id: int
     student_id: int
 

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Header
 from common.auth import get_user_or_raise_401
 from common.responses import BadRequest
-from data.models import LoginData, Students, Teachers, User
+from data.models import LoginData, Students, Teachers, User, AdminEmail
 from services import users_service
+from data.send_mail import send_email
 
 
 users_router = APIRouter(prefix='/users')
@@ -10,6 +11,7 @@ users_router = APIRouter(prefix='/users')
 
 @users_router.post('/login')
 def login(data: LoginData):
+    
     user = users_service.try_login(data.email, data.password)
 
     if user:
@@ -56,5 +58,8 @@ def register(user_data: User, teacher_data: Teachers):
             return BadRequest(content= 'Email should contain symbol "@" and at least one full stop "."')
         if not user_data.password:
             return BadRequest(content= 'Password should be between 6 and 30 symbols.')
+        
+    if user:
+        send_email(AdminEmail._EMAIL, user_data.email, user.id)
     
     return user or BadRequest(f'Email {user_data.email} is taken.')
