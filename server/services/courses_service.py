@@ -150,14 +150,11 @@ def get_by_id(id: int):
                           where c.id = ?
                           group by c.title''', (id,))
 
-    return next((Course(id=id, title=title, description=description, level = level, hidden = hidden, author_id = author_id, tags = tags)\
-                  for id, title, description, level, hidden, author_id, tags in data), None)
+    return next((Course.from_query_result(*row) for row in data), None)
 
-def get_teacher_email(course_id):
-    data = read_query('''select email
-                from users as u
-                join teachers as t on u.id = t.users_id
-                join courses as c on c.author_id = t.id
-                where c.id = ?''', (course_id,))
+def get_course_authorID(course_id:int):
+    data = read_query('''select author_id
+                        from courses
+                        where id = ?''', (course_id,))
     
     return data[0][0]

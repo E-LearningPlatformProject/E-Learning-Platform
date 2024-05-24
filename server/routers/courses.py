@@ -3,8 +3,8 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
-from services import courses_service, teachers_service
-from data.models import Role, CreateCourse, Course
+from services import courses_service, teachers_service, sections_service
+from data.models import Role, CreateCourse, Course, CourseSectionsResponseModel
 from data.send_mail import send_email
 
 
@@ -39,6 +39,25 @@ def get_courses(
         return courses_service.sorting(data, reverse=sorting == 'desc', attribute=sort_by)
     
     return data
+
+
+@courses_router.get('/{course_id}')
+def get_course(course_id:int, x_token: Optional[str] = Header(None)):
+    
+    if not x_token:
+        return Unauthorized('You need to make registration to view this course!')
+    
+    user = get_user_or_raise_401(x_token)
+
+    course = courses_service.get_by_id(course_id)
+
+    if course == None:
+        return BadRequest(f'Course with {course_id} doesn\'t exist!')
+    
+    if course.hidden == True and user.role == Role.STUDENT:
+        return Unauthorized('You don\'t have permission to view this course')
+
+    return(CourseSectionsResponseModel(course = course, sections = sections_service.get_sections(course_id)))
 
 
 @courses_router.post('/')

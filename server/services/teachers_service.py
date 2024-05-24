@@ -34,3 +34,12 @@ def check_if_is_approved(teacher_id):
                       where id = ?''',(teacher_id,))
     
     return True if data[0][0]== 1 else False
+
+def get_teacher_email(course_id):
+    data = read_query('''select email
+                from users as u
+                join teachers as t on u.id = t.users_id
+                join courses as c on c.author_id = t.id
+                where c.id = ?''', (course_id,))
+    
+    return data[0][0]

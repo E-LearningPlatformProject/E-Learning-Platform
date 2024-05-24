@@ -209,6 +209,26 @@ class Course(BaseModel):
             hidden = hidden,
             author_id = author_id,
             tags = tags)
+    
+class Section(BaseModel):
+    id:int
+    title:str
+    type_file:str
+    course_id:int
+    source:str
+
+    @classmethod
+    def from_query_result(cls, id, title, type_file, course_id, source):
+        return cls(
+            id=id,
+            title = title,
+            type_file = type_file,
+            course_id = course_id,
+            source = source)
+    
+class CourseSectionsResponseModel(BaseModel):
+    course: Course
+    sections: list[Section]
 
       
 class Enrollments(BaseModel):

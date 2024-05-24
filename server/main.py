@@ -4,6 +4,7 @@ from routers.users import users_router
 from routers.courses import courses_router
 from routers.students import students_router
 from routers.teachers import teachers_router
+from routers.sections import section_router
 
 
 app = FastAPI()
@@ -11,6 +12,8 @@ app = FastAPI()
 app.include_router(users_router)
 app.include_router(students_router)
 app.include_router(teachers_router)
+app.include_router(courses_router)
+app.include_router(section_router)
 
 
 
@@ -49,6 +52,6 @@ app.include_router(teachers_router)
 #    }
 #}
 
-app.include_router(courses_router)
+
 
 

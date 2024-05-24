@@ -4,7 +4,7 @@ from common.auth import get_user_or_raise_401
 from common.responses import BadRequest, Forbidden, Unauthorized
 from data.models import Role, StudentInfo
 from data.send_mail import send_email
-from services import students_service, courses_service
+from services import students_service, courses_service, teachers_service
 
 
 students_router = APIRouter(prefix='/students')
@@ -29,7 +29,7 @@ def enroll_student_into_course(course_id: int, x_token: Optional[str] = Header(N
     if existing_student.role != Role.STUDENT:
         return Forbidden('You should be a student to enroll!')
     
-    send_email(courses_service.get_teacher_email(course_id),existing_student.email, existing_student.id)
+    send_email(teachers_service.get_teacher_email(course_id),existing_student.email, existing_student.id)
    
     return students_service.enroll_student(course_id, existing_student.id)
 
