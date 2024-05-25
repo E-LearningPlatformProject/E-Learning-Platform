@@ -32,6 +32,14 @@ def enroll_student(course_id: int, student_id: int) -> Enrollments:
                 (course_id, student_id))
                 
     return 'Student\'s enrollment requested!'
+
+def check_if_student_is_enrolled(course_id:int, student_id:int):
+    return any(
+        read_query(
+            '''select courses_id, students_id 
+            from enrollments 
+            where courses_id = ? and students_id = ?''',
+            (course_id, student_id)))
     
     
 

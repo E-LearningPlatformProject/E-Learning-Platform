@@ -4,7 +4,7 @@ from common.auth import get_user_or_raise_401
 from common.responses import BadRequest, Forbidden, Unauthorized
 from data.models import Role, StudentInfo
 from data.send_mail import send_email
-from services import students_service, courses_service, teachers_service
+from services import students_service, courses_service, teachers_service, progress_service
 
 
 students_router = APIRouter(prefix='/students')
@@ -33,3 +33,24 @@ def enroll_student_into_course(course_id: int, x_token: Optional[str] = Header(N
    
     return students_service.enroll_student(course_id, existing_student.id)
 
+
+@students_router.get('/progress/{course_id}')
+def get_progress(course_id: int, x_token: Optional[str] = Header(None)):
+    
+    if not x_token:
+        return Unauthorized('You should have registration!')
+    
+    if not courses_service.exists(course_id):
+        return BadRequest('Course doesn\'t exist!')
+    
+    user = get_user_or_raise_401(x_token)
+
+    if user.role == Role.STUDENT:
+        
+        if not students_service.check_if_student_is_enrolled(course_id, user.id):
+            return Unauthorized('You aren\'t enrolled in this course!')
+
+        return f'Your progress is {progress_service.progress(user.id, course_id)}% for Course with ID: {course_id}'
+
+    else:
+        return Forbidden('Only students can view their progress!')

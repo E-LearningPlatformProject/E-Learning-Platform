@@ -3,7 +3,7 @@ from typing import Optional
 from common.responses import NotFound, BadRequest, Unauthorized, Forbidden
 from common.auth import get_user_or_raise_401
 from data.models import Role, Section
-from services import courses_service, sections_service
+from services import courses_service, sections_service, progress_service, students_service
 
 
 section_router = APIRouter(prefix='/sections')
@@ -36,13 +36,15 @@ def get_section(section_id:int, x_token: Optional[str] = Header(None)):
     if section == None:
         return BadRequest(F'Section with ID: {section_id} doesn\'t exist!')
     
-    if courses_service.is_hidden(section.course_id) and user.role == Role.STUDENT:
-        return Forbidden('You don\'t have permission to view those sections!')
-
-    if not sections_service.check_if_student_is_enrolled(section.course_id, user.id):
-        return Unauthorized('You need to enroll for this course to view this section!')
+    if user.role == Role.STUDENT:
     
-    # Todo - check if progress created, if no create
+        if courses_service.is_hidden(section.course_id):
+            return Forbidden('You don\'t have permission to view those sections!')
+
+        if not students_service.check_if_student_is_enrolled(section.course_id, user.id):
+            return Unauthorized('You need to enroll for this course to view this section!')
+    
+        progress_service.create(user.id, section_id)
     
     return section
 
