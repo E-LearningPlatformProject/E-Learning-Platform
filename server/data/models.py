@@ -240,3 +240,13 @@ class Enrollments(BaseModel):
         return cls(
             course_id = course_id,
             student_id = student_id)
+    
+class Vote(BaseModel):
+    course_id:int
+    rating:int
+
+    @field_validator('rating')
+    def validate_email(cls, rating:str):
+        pattern = r'([1-9]|10)$'
+        
+        return rating if match(pattern, str(rating)) is not None else False
