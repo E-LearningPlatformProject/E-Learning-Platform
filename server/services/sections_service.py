@@ -46,5 +46,14 @@ def update(old:Section, new:Section):
     
     return merged
 
+def exists(id: int) -> bool:
+    return any(
+        read_query(
+            'SELECT id FROM sections WHERE id = ?',
+            (id,)))
+
+def delete_section(section_id:int):
+    update_query('DELETE FROM sections WHERE id = ?', (section_id,))
+    
 
 

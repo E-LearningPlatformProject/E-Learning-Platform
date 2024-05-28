@@ -240,3 +240,6 @@ class Enrollments(BaseModel):
         return cls(
             course_id = course_id,
             student_id = student_id)
+
+class PremiumCourseCount(BaseModel):
+    premium_course_count: int

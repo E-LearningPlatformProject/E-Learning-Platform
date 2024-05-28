@@ -13,4 +13,4 @@ def update_teacher_info(teacher: TeacherInfo,  x_token: Optional[str] = Header(N
         return Unauthorized('You should have registration!')
     existing_teacher = get_user_or_raise_401(x_token)
     return teachers_service.change_account_info(existing_teacher, teacher)
-    #Ако се сещаш за още някоя проверка тук и при students
+    

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 from typing import Optional
-from common.responses import NotFound, BadRequest, Unauthorized, Forbidden
+from common.responses import NotFound, BadRequest, Ok, Unauthorized, Forbidden
 from common.auth import get_user_or_raise_401
 from data.models import Role, Section
 from services import courses_service, sections_service, progress_service, students_service
@@ -11,7 +11,7 @@ section_router = APIRouter(prefix='/sections')
 #@section_router.get('/{course_id}')
 #def get_sections(course_id:int, x_token: Optional[str] = Header(None)):
 #    if not x_token:
-#        return Unauthorized('You are not authorized')
+#        return Unauthorized('You are not authorized!')
 #    
 #    user = get_user_or_raise_401(x_token)
 #
@@ -27,7 +27,7 @@ section_router = APIRouter(prefix='/sections')
 def get_section(section_id:int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
-        return Unauthorized('You are not authorized')
+        return Unauthorized('You are not authorized!')
     
     user = get_user_or_raise_401(x_token)
 
@@ -53,7 +53,7 @@ def get_section(section_id:int, x_token: Optional[str] = Header(None)):
 def create_section(section:Section, course_id:int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
-        return Unauthorized('You are not authorized')
+        return Unauthorized('You are not authorized!')
 
     user = get_user_or_raise_401(x_token)
 
@@ -75,7 +75,7 @@ def create_section(section:Section, course_id:int, x_token: Optional[str] = Head
 def update_section(new_section:Section, section_id:int, x_token: Optional[str] = Header(None)):
 
     if not x_token:
-        return Unauthorized('You are not authorized')
+        return Unauthorized('You are not authorized!')
 
     user = get_user_or_raise_401(x_token)
 
@@ -88,11 +88,34 @@ def update_section(new_section:Section, section_id:int, x_token: Optional[str] =
         return Forbidden('You don\'t have permission to update!')
 
     if user.id != courses_service.get_course_authorID(old_section.course_id):
-        return Forbidden('Only the author of this course can create section!')
+        return Forbidden('Only the author of this course can update section!')
     
     section = sections_service.update(old_section, new_section)
     
     return section
 
-# To do
-# @section_router.delete('/{section_id}')
+
+@section_router.delete('/{section_id}')
+def remove_section(section_id:int, x_token: Optional[str] = Header(None)):
+    if not x_token:
+        return Unauthorized('You are not authorized!')
+    
+    if not sections_service.exists(section_id):
+        return BadRequest('That section doesn\'t exist!')
+    
+    user = get_user_or_raise_401(x_token)
+
+    section = sections_service.get_by_id(section_id)
+
+    if user.role != Role.TEACHER:
+        return Forbidden('You don\'t have permission to update!')
+    
+    if user.id != courses_service.get_course_authorID(section.course_id):
+        return Forbidden('Only the author of this course can delete section!')
+    
+    if progress_service.exists(section.id):
+        progress_service.remove_progress_by_section(section.id)    
+    
+    sections_service.delete_section(section_id)
+    
+    return Ok(content= f'Section №{section.id} removed!')
