@@ -15,6 +15,6 @@ def check_if_student_had_vote(course_id:int, student_id:int):
 def average_rating(course_id):
     data = read_query('''select Round(sum(rating)/count(rating)*10/10,1) as average_score
                     from ratings
-                    where courses_id = 1''')
+                    where courses_id = ?''',(course_id,))
     
     return data[0][0]
