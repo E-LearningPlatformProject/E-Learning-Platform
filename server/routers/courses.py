@@ -3,7 +3,7 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
-from services import courses_service, teachers_service, sections_service, enrollments_service, ratings_service, tags_service
+from services import courses_service, teachers_service, sections_service, enrollments_service, ratings_service, tags_service, progress_service
 from data.models import Role, CreateCourse, Course, CourseSectionsResponseModel
 from data.send_mail import send_email
 
@@ -123,7 +123,8 @@ def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
     if user.role == Role.TEACHER and user.id != courses_service.get_course_authorID(course_id):
         return Forbidden('Only the author of this course can delete it!')
     
-    sections_service.delete_sections_and_progress_by_course_id(course_id)
+    progress_service.delete_by_course_id(course_id)
+    sections_service.delete_by_course_id(course_id)
     enrollments_service.delete(course_id)
     ratings_service.delete(course_id)
     tags_service.delete(course_id)

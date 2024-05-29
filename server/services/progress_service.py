@@ -27,3 +27,12 @@ def progress(student_id, course_id):
 def delete(section_id):
     update_query('DELETE FROM progress WHERE sections_id = ?', (section_id,))
     
+
+def delete_by_course_id(course_id: int):
+    update_query('''
+                DELETE p
+                FROM progress p
+                JOIN sections s ON p.sections_id = s.id
+                WHERE s.course_id = ?;
+            ''', (course_id,))
+    

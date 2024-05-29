@@ -58,14 +58,7 @@ def delete(id:int):
     update_query('DELETE FROM sections WHERE id = ?', (id,))
     
 
-def delete_sections_and_progress_by_course_id(course_id: int):
-    update_query('''
-                DELETE p
-                FROM progress p
-                JOIN sections s ON p.sections_id = s.id
-                WHERE s.course_id = ?;
-            ''', (course_id,))
-    
+def delete_by_course_id(course_id: int):    
     update_query('DELETE FROM sections WHERE course_id = ?', (course_id,))
 
 
