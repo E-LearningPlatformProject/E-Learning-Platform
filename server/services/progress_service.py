@@ -24,13 +24,6 @@ def progress(student_id, course_id):
     return data[0][0]
 
 
-def exists(section_id: int) -> bool:
-    return any(
-        read_query(
-            'SELECT sections_id FROM progress WHERE sections_id = ?',
-            (section_id,)))
-
-
-def remove_progress_by_section(section_id):
+def delete(section_id):
     update_query('DELETE FROM progress WHERE sections_id = ?', (section_id,))
     

@@ -1,4 +1,4 @@
-from data.database import insert_query, read_query
+from data.database import insert_query, read_query, update_query
 from data.models import Vote
 
 
@@ -18,3 +18,7 @@ def average_rating(course_id):
                     where courses_id = ?''',(course_id,))
     
     return data[0][0]
+
+
+def delete(course_id):
+    update_query('DELETE FROM ratings WHERE courses_id = ?', (course_id,))

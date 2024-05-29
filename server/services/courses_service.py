@@ -165,3 +165,6 @@ def is_hidden(id: int) -> bool:
             (id,))
     
     return True if data[0][0] == True else False
+
+def delete(id):
+    update_query('DELETE FROM courses WHERE id = ?', (id,))

@@ -101,21 +101,20 @@ def remove_section(section_id:int, x_token: Optional[str] = Header(None)):
         return Unauthorized('You are not authorized!')
     
     if not sections_service.exists(section_id):
-        return BadRequest('That section doesn\'t exist!')
+        return BadRequest(f'Section with id {section_id} doesn\'t exist!')
     
     user = get_user_or_raise_401(x_token)
 
     section = sections_service.get_by_id(section_id)
 
-    if user.role != Role.TEACHER:
-        return Forbidden('You don\'t have permission to update!')
+    if user.role == Role.STUDENT:
+        return Forbidden('You don\'t have permission to delete!')
     
-    if user.id != courses_service.get_course_authorID(section.course_id):
+    if user.role == Role.TEACHER and user.id != courses_service.get_course_authorID(section.course_id):
         return Forbidden('Only the author of this course can delete section!')
     
-    if progress_service.exists(section.id):
-        progress_service.remove_progress_by_section(section.id)    
-    
-    sections_service.delete_section(section_id)
+   
+    progress_service.delete(section.id)    
+    sections_service.delete(section_id)
     
     return Ok(content= f'Section №{section.id} removed!')

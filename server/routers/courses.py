@@ -3,7 +3,7 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
-from services import courses_service, teachers_service, sections_service
+from services import courses_service, teachers_service, sections_service, enrollments_service, ratings_service, tags_service
 from data.models import Role, CreateCourse, Course, CourseSectionsResponseModel
 from data.send_mail import send_email
 
@@ -96,7 +96,7 @@ def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header
     old_course = courses_service.get_by_id(course_id)
 
     if old_course == None:
-        return BadRequest(f'Course with {course_id} doesn\'t exist!')
+        return BadRequest(f'Course with id {course_id} doesn\'t exist!')
     
     if user.id != old_course.author_id:
         return Unauthorized('You are not authorized.')
@@ -106,5 +106,27 @@ def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header
     return course
     
 
-# To do
-#@courses_router.delete('/{course_id}')
+
+@courses_router.delete('/{course_id}')
+def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
+    if not x_token:
+        return Unauthorized('You are not authorized!')
+    
+    course = courses_service.get_by_id(course_id)
+    if course == None:
+        return BadRequest(f'Course with id {course_id} doesn\'t exist!')
+    
+    user = get_user_or_raise_401(x_token)
+    if user.role == Role.STUDENT:
+        return Forbidden('You don\'t have permission to delete!')
+    
+    if user.role == Role.TEACHER and user.id != courses_service.get_course_authorID(course_id):
+        return Forbidden('Only the author of this course can delete it!')
+    
+    sections_service.delete_sections_and_progress_by_course_id(course_id)
+    enrollments_service.delete(course_id)
+    ratings_service.delete(course_id)
+    tags_service.delete(course_id)
+    courses_service.delete(course_id)
+    
+    return Ok(content= f'Course №{course.id} removed!')
