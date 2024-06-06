@@ -4,13 +4,16 @@ from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
 from services import courses_service, teachers_service, sections_service, enrollments_service, ratings_service, tags_service, progress_service
-from data.models import Role, CreateCourse, Course, CourseSectionsResponseModel
+from data.models import Role, CreateCourse, Course, CourseSectionsResponseModel, CoursesTagsResponeModel
 from data.send_mail import send_email
+from PIL import Image
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 
-courses_router = APIRouter(prefix='/courses')
+courses_router = APIRouter(prefix='/courses', tags=['Courses'])
 
-@courses_router.get('/')
+@courses_router.get('/', response_model= list[CoursesTagsResponeModel])
 def get_courses(
     skip: int | None = 0,
     take: int |None = 5,
@@ -41,7 +44,7 @@ def get_courses(
     return data
 
 
-@courses_router.get('/{course_id}')
+@courses_router.get('/{course_id}', response_model=CourseSectionsResponseModel)
 def get_course(course_id:int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
@@ -131,3 +134,19 @@ def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
     courses_service.delete(course_id)
     
     return Ok(content= f'Course №{course.id} removed!')
+
+@courses_router.post('/image')
+def add_image():
+    courses_service.add_picture()
+
+@courses_router.get('/images/course')
+def get_image():
+    #image = courses_service.get_picture()
+    #im = Image.open(r"/Users/romario/Python Code/18.png")
+    im = Image.open(r"/Users/romario/Python Code/18.png")
+    im = im.resize((300, 300))
+    image_path = Path("/Users/romario/Python Code/18_decode.png")
+
+    if not image_path.is_file():
+        return {"error": "Image not found on the server"}
+    return FileResponse(image_path)

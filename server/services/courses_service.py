@@ -4,7 +4,7 @@ from services import tags_service
 
 def all_non_premium(search:str, skip:int, take:int):
     if search is None:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id
@@ -14,7 +14,7 @@ def all_non_premium(search:str, skip:int, take:int):
                           LIMIT ?, ?''', (skip, take))
     
     else:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           join courses_has_tags as ct on c.id = ct.course_id
                           join tags as t on t.id = ct.tag_id 
@@ -28,7 +28,7 @@ def all_non_premium(search:str, skip:int, take:int):
 
 def all_non_hidden(search:str, skip:int, take:int):
     if search is None:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id
@@ -38,7 +38,7 @@ def all_non_hidden(search:str, skip:int, take:int):
                           LIMIT ?, ?''', (skip, take))
     
     else:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id
@@ -51,7 +51,7 @@ def all_non_hidden(search:str, skip:int, take:int):
 
 def t_private(search:str, teacher_id, skip:int, take:int):
     if search is None:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id 
@@ -61,7 +61,7 @@ def t_private(search:str, teacher_id, skip:int, take:int):
                           LIMIT ?, ?''', (teacher_id, skip, take))
     
     else:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id 
@@ -74,7 +74,7 @@ def t_private(search:str, teacher_id, skip:int, take:int):
 
 def all(search:str, skip:int, take:int):
     if search is None:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id
@@ -83,7 +83,7 @@ def all(search:str, skip:int, take:int):
                           LIMIT ?, ?''', (skip, take))
     
     else:
-        data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
+        data = read_query('''select c.id, c.title, c.description, c.level, c.image, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id
@@ -143,7 +143,7 @@ def exists(id: int) -> bool:
 
 
 def get_by_id(id: int):
-    data = read_query('''select c.id, c.title, c.description, level, hidden, author_id, GROUP_CONCAT(t.title) as tags
+    data = read_query('''select c.id, c.title, c.description, level, hidden, image, author_id, GROUP_CONCAT(t.title) as tags
                           from courses as c
                           left join courses_has_tags as ct on c.id = ct.course_id
                           left join tags as t on t.id = ct.tag_id
@@ -168,3 +168,16 @@ def is_hidden(id: int) -> bool:
 
 def delete(id):
     update_query('DELETE FROM courses WHERE id = ?', (id,))
+
+def add_picture():
+    update_query(
+        '''UPDATE Courses
+         SET
+           image = LOAD_FILE(?)
+           WHERE id = 1 
+        ''',('/Users/romario/Python Code/myimage_500.png',))
+    
+def get_picture():
+    data = read_query('select image from courses where id = 1')
+
+    return data[0][0]

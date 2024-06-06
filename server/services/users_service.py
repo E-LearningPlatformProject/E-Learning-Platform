@@ -36,7 +36,7 @@ def find_student_info(email: str) -> User | None:
 def find_teacher_info(email: str) -> User | None:
     data = read_query(
         '''
-        SELECT teachers.id, users.email, users.password, users.role, teachers.first_name, teachers.last_name, teachers.phone_number, teachers.linked_in_account, teachers.is_approved
+        SELECT teachers.id, users.email, users.password, users.role, teachers.first_name, teachers.last_name, teachers.phone_number, teachers.linked_in_account, teachers.is_approved, teachers.image
         FROM users
         JOIN teachers ON users.id = teachers.users_id
         WHERE users.email = ?
@@ -79,7 +79,8 @@ def create_teacher(email: str,
                    first_name: str, 
                    last_name: str,
                    phone_number,
-                   linked_in_account) -> User | None:
+                   linked_in_account,
+                   image) -> User | None:
     
     hashed_password = _hash_password(password)
 
@@ -89,9 +90,9 @@ def create_teacher(email: str,
             (email, hashed_password, Role.TEACHER))
 
         generated_teacher_id = insert_query(
-            '''INSERT INTO teachers(users_id, first_name, last_name, phone_number, linked_in_account) 
-            VALUES (?,?,?,?,?)''',
-            (generated_id, first_name, last_name, phone_number, linked_in_account)
+            '''INSERT INTO teachers(users_id, first_name, last_name, phone_number, linked_in_account, image) 
+            VALUES (?,?,?,?,?,?)''',
+            (generated_id, first_name, last_name, phone_number, linked_in_account, image)
         )
 
         return User(id=generated_teacher_id, email=email, password='xxxxxxxxx', role=Role.TEACHER)

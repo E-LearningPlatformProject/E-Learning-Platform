@@ -2,11 +2,13 @@ from fastapi import APIRouter, Header
 from common.auth import get_user_or_raise_401
 from common.responses import BadRequest
 from data.models import LoginData, Students, Teachers, User, AdminEmail
-from services import users_service
+from services import users_service, teachers_service
 from data.send_mail import send_email
+from pathlib import Path
+from fastapi.responses import FileResponse
 
 
-users_router = APIRouter(prefix='/users')
+users_router = APIRouter(prefix='/users', tags=['Users'])
 
 
 @users_router.post('/login')
@@ -26,10 +28,15 @@ def user_info(x_token: str | None = Header()):
     if  not x_token :
         return BadRequest('No No')
     
-    return get_user_or_raise_401(x_token)
+    user = get_user_or_raise_401(x_token)
+
+    image = Path(user.image)
+    
+    image_res = FileResponse(image)
+    return  user, image_res
 
 
-@users_router.post('/register/student',)
+@users_router.post('/register/student')
 def register(user_data: User, student_data: Students):
 
     if user_data.email and user_data.password:
@@ -45,6 +52,7 @@ def register(user_data: User, student_data: Students):
 
 @users_router.post('/register/teacher')
 def register(user_data: User, teacher_data: Teachers):
+    teacher_data.image = teachers_service.resize_image(teacher_data.image,teacher_data.first_name, teacher_data.last_name)
 
     if user_data.email and user_data.password:
         user = users_service.create_teacher(user_data.email,
@@ -52,7 +60,8 @@ def register(user_data: User, teacher_data: Teachers):
                                             teacher_data.first_name, 
                                             teacher_data.last_name,
                                             teacher_data.phone_number,
-                                            teacher_data.linked_in_account)
+                                            teacher_data.linked_in_account,
+                                            teacher_data.image)
     else:
         if not user_data.email:
             return BadRequest(content= 'Email should contain symbol "@" and at least one full stop "."')

@@ -7,7 +7,10 @@ from routers.teachers import teachers_router
 from routers.sections import section_router
 
 
-app = FastAPI()
+app = FastAPI(title='E-Learning', 
+              description =''' E-learning platform that would be used by students 
+              to search for and enroll in online courses and teachers who would publish the course''',
+              version = '1.0')
 
 app.include_router(users_router)
 app.include_router(students_router)
@@ -48,7 +51,8 @@ app.include_router(section_router)
 #        "last_name": "Plamenov",
 #        "phone_number": "0885624569",
 #        "linked_in_account": "P.Plamenov",
-#        "is_approved": "0"
+#        "is_approved": "0",
+#        "image": "/Users/romario/Telerik Academy/Final Project/E-Learning-Platform/server/data/teacher_images/dumbledore.jpg"
 #    }
 #}
 

@@ -3,6 +3,8 @@ from typing import Annotated
 from pydantic import BaseModel, StringConstraints, field_validator
 from re import match
 from os import getenv
+from pathlib import Path
+from fastapi.responses import FileResponse
 
 
 TEmail = Annotated[str, StringConstraints(pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')]
@@ -56,9 +58,10 @@ class Teachers(BaseModel):
     users_id:int
     first_name:str
     last_name:str
+    image: str | Path
     
     @classmethod
-    def from_query_result(cls, id, phone_number, linked_in_account, is_approved, users_id, first_name, last_name):
+    def from_query_result(cls, id, phone_number, linked_in_account, is_approved, users_id, first_name, last_name, image):
         return cls(
             id=id,
             phone_number=phone_number,
@@ -66,7 +69,8 @@ class Teachers(BaseModel):
             is_approved=is_approved,
             users_id=users_id,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
+            image=image
             )
     
 class Students(BaseModel):
@@ -113,6 +117,7 @@ class TeacherInfo(BaseModel):
     phone_number: int
     linked_in_account: str
     is_approved: bool
+    image : str
 
     @classmethod
     def from_query_result(cls, id, 
@@ -123,7 +128,8 @@ class TeacherInfo(BaseModel):
                         last_name, 
                         phone_number,
                         linked_in_account,
-                        is_approved):
+                        is_approved,
+                        image):
         
         return cls(
             id=id,
@@ -134,8 +140,8 @@ class TeacherInfo(BaseModel):
             last_name=last_name,
             phone_number=phone_number,
             linked_in_account=linked_in_account,
-            is_approved=is_approved
-        )
+            is_approved=is_approved,
+            image=image)
 
 
 
@@ -161,16 +167,18 @@ class CoursesTagsResponeModel(BaseModel):
     id:int
     title: str
     description: str
-    level:str
+    level: str
+    image: str
     tags: str | None
 
     @classmethod
-    def from_query_result(cls, id, title, description,level, tags):
+    def from_query_result(cls, id, title, description,level, image,tags):
         return cls(
             id = id,
             title = title,
             description = description,
             level = level,
+            image = image,
             tags = tags)
 
 
@@ -196,17 +204,19 @@ class Course(BaseModel):
     description: str
     level:str
     hidden:bool
+    image:str
     author_id: int
     tags: str | None
 
     @classmethod
-    def from_query_result(cls, id, title, description, level, hidden, author_id, tags):
+    def from_query_result(cls, id, title, description, level, hidden, image, author_id, tags):
         return cls(
             id=id,
             title = title,
             description = description,
             level = level,
             hidden = hidden,
+            image = image,
             author_id = author_id,
             tags = tags)
     
@@ -254,3 +264,6 @@ class Vote(BaseModel):
 
 class PremiumCourseCount(BaseModel):
     premium_course_count: int
+
+class Route:
+    ROUTE_TEACH_IMAGES = '/Users/romario/Telerik Academy/Final Project/E-Learning-Platform/server/data/teacher_images/'
