@@ -2,7 +2,7 @@ from data.database import insert_query, read_query, update_query
 from data.models import CoursesTagsResponeModel, CreateCourse, Course
 from services import tags_service
 
-def all_non_premium(search:str, skip:int, take:int):
+def all_non_premium(search: str = None, skip: int = None, take: int = None):
     if search is None:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
@@ -26,7 +26,7 @@ def all_non_premium(search:str, skip:int, take:int):
     
     return (CoursesTagsResponeModel.from_query_result(*row) for row in data)
 
-def all_non_hidden(search:str, skip:int, take:int):
+def all_non_hidden(search: str = None, skip: int = None, take: int = None):
     if search is None:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
@@ -49,7 +49,7 @@ def all_non_hidden(search:str, skip:int, take:int):
         
     return (CoursesTagsResponeModel.from_query_result(*row) for row in data)
 
-def t_private(search:str, teacher_id, skip:int, take:int):
+def t_private(teacher_id, search:str = None, skip:int = None, take:int = None):
     if search is None:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c
@@ -72,7 +72,7 @@ def t_private(search:str, teacher_id, skip:int, take:int):
         
     return (CoursesTagsResponeModel.from_query_result(*row) for row in data)
 
-def all(search:str, skip:int, take:int):
+def all(search: str = None, skip: int = None, take: int = None):
     if search is None:
         data = read_query('''select c.id, c.title, c.description, level, GROUP_CONCAT(t.title) as tags
                           from courses as c

@@ -20,7 +20,6 @@ def get_sections(course_id:int):
     return (Section.from_query_result(*row) for row in data)
 
 def get_by_id(id: int):
-
     data = read_query('''select id, title, type_file, course_id, source
                         from sections
                         where id = ?''', (id,))
