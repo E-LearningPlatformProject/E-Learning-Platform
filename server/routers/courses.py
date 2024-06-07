@@ -32,7 +32,7 @@ def get_courses(
             data = courses_service.all(search, skip, take)
 
         elif user.role == Role.TEACHER:
-            data = courses_service.t_private(search, user.id, skip, take)
+            data = courses_service.t_private( user.id, search, skip, take)
         
         else:
             data = courses_service.all_non_hidden(search, skip, take)
