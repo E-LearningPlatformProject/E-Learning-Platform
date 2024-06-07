@@ -141,3 +141,4 @@ def from_token(token: str) -> User | None:
         return find_teacher_info(decoded['email'])
     else:
         return find_by_email(decoded['email'])
+
