@@ -5,7 +5,7 @@ from common.responses import BadRequest, NotFound, Unauthorized
 from data.models import LoginData, StudentInfo, Students, TeacherInfo, Teachers, User
 from services import teachers_service
 
-teachers_router = APIRouter(prefix='/teachers')
+teachers_router = APIRouter(prefix='/teachers', tags=['Teachers'])
 
 @teachers_router.put('/')
 def update_teacher_info(teacher: TeacherInfo,  x_token: Optional[str] = Header(None)):

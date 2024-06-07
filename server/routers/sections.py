@@ -6,7 +6,7 @@ from data.models import Role, Section
 from services import courses_service, sections_service, progress_service, students_service
 
 
-section_router = APIRouter(prefix='/sections')
+section_router = APIRouter(prefix='/sections', tags=['Sections'])
 
 #@section_router.get('/{course_id}')
 #def get_sections(course_id:int, x_token: Optional[str] = Header(None)):

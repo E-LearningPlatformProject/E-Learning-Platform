@@ -1,5 +1,6 @@
 from data.database import insert_query, read_query, update_query
-from data.models import TeacherInfo
+from data.models import TeacherInfo, Route
+from PIL import Image
 
 
 def change_account_info(old: TeacherInfo, new: TeacherInfo):
@@ -43,3 +44,12 @@ def get_teacher_email(course_id):
                 where c.id = ?''', (course_id,))
     
     return data[0][0]
+
+def resize_image(path:str, first_name, last_name):
+    image = Image.open(path)
+    new_image = image.resize((400, 500))
+    
+    new_path = Route.ROUTE_TEACH_IMAGES + first_name + '_' + last_name+'.png'
+    new_image.save(new_path)
+
+    return new_path

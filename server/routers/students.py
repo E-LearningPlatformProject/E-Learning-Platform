@@ -7,7 +7,7 @@ from data.send_mail import send_email
 from services import students_service, courses_service, teachers_service, progress_service, ratings_service
 
 
-students_router = APIRouter(prefix='/students')
+students_router = APIRouter(prefix='/students', tags=['Students'])
 
 @students_router.put('/')
 def update_student_info(student: StudentInfo,  x_token: Optional[str] = Header(None)):
