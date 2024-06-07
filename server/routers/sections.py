@@ -23,7 +23,7 @@ section_router = APIRouter(prefix='/sections', tags=['Sections'])
 #    
 #    return sections_service.get_sections(course_id)
 
-@section_router.get('/{section_id}')
+@section_router.get('/{section_id}', response_model = Section)
 def get_section(section_id:int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
@@ -49,7 +49,7 @@ def get_section(section_id:int, x_token: Optional[str] = Header(None)):
     return section
 
 
-@section_router.post('/{course_id}')
+@section_router.post('/{course_id}', response_model=Section)
 def create_section(section:Section, course_id:int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
@@ -71,7 +71,7 @@ def create_section(section:Section, course_id:int, x_token: Optional[str] = Head
 
     return section
 
-@section_router.put('/{section_id}')
+@section_router.put('/{section_id}', response_model=Section)
 def update_section(new_section:Section, section_id:int, x_token: Optional[str] = Header(None)):
 
     if not x_token:
@@ -95,7 +95,7 @@ def update_section(new_section:Section, section_id:int, x_token: Optional[str] =
     return section
 
 
-@section_router.delete('/{section_id}')
+@section_router.delete('/{section_id}', response_model=Ok)
 def remove_section(section_id:int, x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You are not authorized!')

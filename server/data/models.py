@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Annotated
-from pydantic import BaseModel, StringConstraints, field_validator
+from pydantic import BaseModel, StringConstraints, field_validator, Field
 from re import match
 from os import getenv
 from pathlib import Path
@@ -19,11 +19,10 @@ class Role:
 
 
 class User(BaseModel):
-    id: int | None
-    email:str
-    password: str
-    
-    role:str
+    id: int | None = Field(examples=[8])
+    email:str = Field(examples=["ivan0198@abv.bg"])
+    password: str = Field(examples=["123456"])
+    role:str = Field(examples=["teacher / student"])
 
     @classmethod
     def from_query_result(cls, id, email, password, role):
@@ -51,14 +50,14 @@ class User(BaseModel):
         return password if match(pattern, password) is not None else False
     
 class Teachers(BaseModel):
-    id:int
-    phone_number:int 
-    linked_in_account:str 
-    is_approved:bool 
-    users_id:int
-    first_name:str
-    last_name:str
-    image: str | Path
+    id:int = Field(examples=["3"])
+    phone_number:int = Field(examples=["003598977658765"])
+    linked_in_account:str = Field(examples=["https://www.linkedin.com/in/ivanivanov"])
+    is_approved:bool = Field(examples=[True])
+    users_id:int = Field(examples=["8"])
+    first_name:str = Field(examples=["Ivan"])
+    last_name:str = Field(examples=["Ivanov"])
+    image: str = Field(examples=["PATH/image.png"])
     
     @classmethod
     def from_query_result(cls, id, phone_number, linked_in_account, is_approved, users_id, first_name, last_name, image):
@@ -74,10 +73,10 @@ class Teachers(BaseModel):
             )
     
 class Students(BaseModel):
-    id:int
-    users_id:int
-    first_name:str
-    last_name:str
+    id:int = Field(examples=["4"])
+    users_id:int = Field(examples=["9"])
+    first_name:str = Field(examples=["Daniel"])
+    last_name:str = Field(examples=["Angelov"])
 
     @classmethod
     def from_query_result(cls, id, users_id, first_name, last_name):
@@ -89,12 +88,12 @@ class Students(BaseModel):
         )
     
 class StudentInfo(BaseModel):
-    id: int
-    email: str
-    password: str
-    role: str
-    first_name: str
-    last_name: str
+    id: int = Field(examples=["4"])
+    email: str = Field(examples=["daniel34@abc.com"])
+    password: str = Field(examples=["123de5a"])
+    role: str = Field(examples=["student"])
+    first_name: str = Field(examples=["Daniel"])
+    last_name: str = Field(examples=["Angelov"])
 
     @classmethod
     def from_query_result(cls, id, email, password, role, first_name, last_name):
@@ -108,16 +107,16 @@ class StudentInfo(BaseModel):
         )
 
 class TeacherInfo(BaseModel):
-    id: int
-    email: str
-    password: str
-    role: str
-    first_name: str
-    last_name: str
-    phone_number: int
-    linked_in_account: str
-    is_approved: bool
-    image : str
+    id: int = Field(examples=["6"])
+    email: str = Field(examples=["name@abc.com"])
+    password: str = Field(examples=["na12345"])
+    role: str = Field(examples=["teacher"])
+    first_name: str = Field(examples=["Angel"])
+    last_name: str = Field(examples=["Ivanov"])
+    phone_number: int = Field(examples=["00545356355"])
+    linked_in_account: str = Field(examples=["https://www.linkedin.com/in/ivanov"])
+    is_approved: bool = Field(examples=[True])
+    image : str = Field(examples=["PATH/image.png"])
 
     @classmethod
     def from_query_result(cls, id, 
@@ -146,15 +145,15 @@ class TeacherInfo(BaseModel):
 
 
 class LoginData(BaseModel):
-    email: TEmail
-    password: str
+    email: TEmail = Field(examples=["name@abc.com"])
+    password: str = Field(examples=["123456"])
 
 class Key:
     KEY = getenv('KEY')
 
 class Tag(BaseModel):
     #id:int
-    title:str
+    title:str = Field(examples=["Math"])
 
     @classmethod
     def from_query_result(cls, title):
@@ -164,12 +163,12 @@ class Tag(BaseModel):
 
 
 class CoursesTagsResponeModel(BaseModel):
-    id:int
-    title: str
-    description: str
-    level: str
-    image: str
-    tags: str | None
+    id:int = Field(examples=["6"])
+    title: str = Field(examples=["Programming for begginers"])
+    description: str = Field(examples=["Basic knowledge for programming"])
+    level: str = Field(examples=["public / premium"])
+    image: str = Field(examples=["URL"])
+    tags: str | None = Field(examples=["Math, Programming"])
 
     @classmethod
     def from_query_result(cls, id, title, description,level, image,tags):
@@ -183,11 +182,11 @@ class CoursesTagsResponeModel(BaseModel):
 
 
 class CreateCourse(BaseModel):
-    id:int
-    title: str
-    description: str
-    level:str
-    tags: str | None
+    id:int = Field(examples=["2"])
+    title: str = Field(examples=["Programming for begginers"])
+    description: str = Field(examples=["Basic knowledge for programming"])
+    level:str = Field(examples=["public / premium"])
+    tags: str | None = Field(default=None,examples=["Math, Programming"])
 
     @classmethod
     def from_query_result(cls, id, title, description,level, tags):
@@ -199,14 +198,14 @@ class CreateCourse(BaseModel):
             tags = tags)
 
 class Course(BaseModel):
-    id:int
-    title: str
-    description: str
-    level:str
-    hidden:bool
-    image:str
-    author_id: int
-    tags: str | None
+    id:int = Field(examples=["2"])
+    title: str = Field(examples=["Programming for begginers"])
+    description: str = Field(examples=["Basic knowledge for programming"])
+    level:str = Field(examples=["public / premium"])
+    hidden:bool = Field(examples=[True])
+    image:str = Field(examples=["URL"])
+    author_id: int = Field(examples=["1"])
+    tags: str | None = Field(default=None,examples=["Math, Programming"])
 
     @classmethod
     def from_query_result(cls, id, title, description, level, hidden, image, author_id, tags):
@@ -221,11 +220,11 @@ class Course(BaseModel):
             tags = tags)
     
 class Section(BaseModel):
-    id:int
-    title:str
-    type_file:str
-    course_id:int
-    source:str
+    id:int = Field(examples=["1"])
+    title:str = Field(examples=["Loops"]) 
+    type_file:str = Field(examples=["doc"])
+    course_id:int = Field(examples=["3"])
+    source:str = Field(examples=["URL"])
 
     @classmethod
     def from_query_result(cls, id, title, type_file, course_id, source):
@@ -237,13 +236,13 @@ class Section(BaseModel):
             source = source)
     
 class CourseSectionsResponseModel(BaseModel):
-    course: Course
-    sections: list[Section]
+    course: Course  = Field(examples=["Course"])
+    sections: list[Section]  = Field(examples=["doc"])
 
       
 class Enrollments(BaseModel):
-    course_id: int
-    student_id: int
+    course_id: int = Field(examples=["4"])
+    student_id: int = Field(examples=["2"])
 
     @classmethod
     def from_query_result(cls, course_id, student_id):
@@ -252,8 +251,8 @@ class Enrollments(BaseModel):
             student_id = student_id)
     
 class Vote(BaseModel):
-    course_id:int
-    rating:int
+    course_id:int = Field(examples=["2"])
+    rating:int = Field(examples=["8"])
 
     @field_validator('rating')
     def validate_email(cls, rating:str):
@@ -263,7 +262,7 @@ class Vote(BaseModel):
             
 
 class PremiumCourseCount(BaseModel):
-    premium_course_count: int
+    premium_course_count: int = Field(examples=["5"])
 
 class Route:
     ROUTE_TEACH_IMAGES = '/Users/romario/Telerik Academy/Final Project/E-Learning-Platform/server/data/teacher_images/'
