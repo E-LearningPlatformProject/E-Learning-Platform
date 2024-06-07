@@ -34,7 +34,7 @@ def enroll_student_into_course(course_id: int, x_token: Optional[str] = Header(N
     return students_service.enroll_student(course_id, existing_student.id)
 
 
-@students_router.get('/progress/{course_id}', response_model=Ok)
+@students_router.get('/progress/{course_id}')
 def get_progress(course_id: int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
@@ -55,7 +55,7 @@ def get_progress(course_id: int, x_token: Optional[str] = Header(None)):
     else:
         return Forbidden('Only students can view their progress!')
     
-@students_router.post('/rating', response_model=Ok)
+@students_router.post('/rating')
 def vote(vote:Vote, x_token: Optional[str] = Header(None)):
 
     if not x_token:

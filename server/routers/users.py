@@ -33,7 +33,7 @@ def user_info(x_token: str | None = Header()):
     image = Path(user.image)
     
     image_res = FileResponse(image)
-    return  user, image_res
+    return  user
 
 
 @users_router.post('/register/student', response_model=User)

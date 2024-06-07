@@ -32,7 +32,7 @@ def get_courses(
             data = courses_service.all(search, skip, take)
 
         elif user.role == Role.TEACHER:
-            data = courses_service.t_private(search, user.id, skip, take)
+            data = courses_service.t_private(user.id, search, skip, take)
         
         else:
             data = courses_service.all_non_hidden(search, skip, take)
@@ -110,7 +110,7 @@ def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header
     
 
 
-@courses_router.delete('/{course_id}', response_model=Ok)
+@courses_router.delete('/{course_id}')
 def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You are not authorized!')

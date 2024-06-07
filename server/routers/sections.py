@@ -95,7 +95,7 @@ def update_section(new_section:Section, section_id:int, x_token: Optional[str] =
     return section
 
 
-@section_router.delete('/{section_id}', response_model=Ok)
+@section_router.delete('/{section_id}')
 def remove_section(section_id:int, x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You are not authorized!')
