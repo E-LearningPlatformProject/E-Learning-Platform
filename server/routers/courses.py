@@ -32,7 +32,7 @@ def get_courses(
             data = courses_service.all(search, skip, take)
 
         elif user.role == Role.TEACHER:
-            data = courses_service.t_private( user.id, search, skip, take)
+            data = courses_service.t_private(user.id, search, skip, take)
         
         else:
             data = courses_service.all_non_hidden(search, skip, take)
@@ -63,7 +63,7 @@ def get_course(course_id:int, x_token: Optional[str] = Header(None)):
     return(CourseSectionsResponseModel(course = course, sections = sections_service.get_sections(course_id)))
 
 
-@courses_router.post('/')
+@courses_router.post('/', response_model=CreateCourse)
 def create_courses(course:CreateCourse, x_token: Optional[str] = Header(None)):
     
     if not x_token:
@@ -82,7 +82,7 @@ def create_courses(course:CreateCourse, x_token: Optional[str] = Header(None)):
 
     return course
 
-@courses_router.put('/{course_id}')
+@courses_router.put('/{course_id}', response_model=Course)
 def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header(None)):
     
     if not x_token:
@@ -134,19 +134,3 @@ def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
     courses_service.delete(course_id)
     
     return Ok(content= f'Course №{course.id} removed!')
-
-@courses_router.post('/image')
-def add_image():
-    courses_service.add_picture()
-
-@courses_router.get('/images/course')
-def get_image():
-    #image = courses_service.get_picture()
-    #im = Image.open(r"/Users/romario/Python Code/18.png")
-    im = Image.open(r"/Users/romario/Python Code/18.png")
-    im = im.resize((300, 300))
-    image_path = Path("/Users/romario/Python Code/18_decode.png")
-
-    if not image_path.is_file():
-        return {"error": "Image not found on the server"}
-    return FileResponse(image_path)

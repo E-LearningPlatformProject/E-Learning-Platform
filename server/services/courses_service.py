@@ -168,16 +168,3 @@ def is_hidden(id: int) -> bool:
 
 def delete(id):
     update_query('DELETE FROM courses WHERE id = ?', (id,))
-
-def add_picture():
-    update_query(
-        '''UPDATE Courses
-         SET
-           image = LOAD_FILE(?)
-           WHERE id = 1 
-        ''',('/Users/romario/Python Code/myimage_500.png',))
-    
-def get_picture():
-    data = read_query('select image from courses where id = 1')
-
-    return data[0][0]

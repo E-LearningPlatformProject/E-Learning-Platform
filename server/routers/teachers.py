@@ -7,7 +7,7 @@ from services import teachers_service
 
 teachers_router = APIRouter(prefix='/teachers', tags=['Teachers'])
 
-@teachers_router.put('/')
+@teachers_router.put('/', response_model=TeacherInfo)
 def update_teacher_info(teacher: TeacherInfo,  x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You should have registration!')

@@ -1,15 +1,15 @@
 from typing import Optional
 from fastapi import APIRouter, Header
 from common.auth import get_user_or_raise_401
-from common.responses import BadRequest, Forbidden, Unauthorized
-from data.models import Role, StudentInfo, Vote
+from common.responses import BadRequest, Forbidden, Unauthorized, Ok
+from data.models import Role, StudentInfo, Vote, Enrollments
 from data.send_mail import send_email
 from services import students_service, courses_service, teachers_service, progress_service, ratings_service
 
 
 students_router = APIRouter(prefix='/students', tags=['Students'])
 
-@students_router.put('/')
+@students_router.put('/', response_model=StudentInfo)
 def update_student_info(student: StudentInfo,  x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You should have registration!')
@@ -17,7 +17,7 @@ def update_student_info(student: StudentInfo,  x_token: Optional[str] = Header(N
     return students_service.change_account_info(existing_student, student)
 
     
-@students_router.post('/enrolment/{course_id}')
+@students_router.post('/enrolment/{course_id}', response_model= Enrollments)
 def enroll_student_into_course(course_id: int, x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You should have registration!')
@@ -50,7 +50,7 @@ def get_progress(course_id: int, x_token: Optional[str] = Header(None)):
         if not students_service.check_if_student_is_enrolled(course_id, user.id):
             return Unauthorized('You aren\'t enrolled in this course!')
 
-        return f'Your progress is {progress_service.progress(user.id, course_id)}% for Course with ID: {course_id}'
+        return Ok(f'Your progress is {progress_service.progress(user.id, course_id)}% for Course with ID: {course_id}')
 
     else:
         return Forbidden('Only students can view their progress!')
@@ -77,7 +77,7 @@ def vote(vote:Vote, x_token: Optional[str] = Header(None)):
         
         ratings_service.vote(vote, user.id)
 
-        return 'Your vote was seccesfull!'
+        return Ok('Your vote was seccesfull!')
 
     else:
         return Forbidden('Only students can vote!')

@@ -23,7 +23,7 @@ def login(data: LoginData):
         return BadRequest('Invalid login data')
 
 
-@users_router.get('/info')
+@users_router.get('/info', response_model=User)
 def user_info(x_token: str | None = Header()):
     if  not x_token :
         return BadRequest('No No')
@@ -33,10 +33,10 @@ def user_info(x_token: str | None = Header()):
     image = Path(user.image)
     
     image_res = FileResponse(image)
-    return  user, image_res
+    return  user
 
 
-@users_router.post('/register/student')
+@users_router.post('/register/student', response_model=User)
 def register(user_data: User, student_data: Students):
 
     if user_data.email and user_data.password:
@@ -50,7 +50,7 @@ def register(user_data: User, student_data: Students):
     return user or BadRequest(f'Email {user_data.email} is taken.')
 
 
-@users_router.post('/register/teacher')
+@users_router.post('/register/teacher', response_model=User)
 def register(user_data: User, teacher_data: Teachers):
     teacher_data.image = teachers_service.resize_image(teacher_data.image,teacher_data.first_name, teacher_data.last_name)
 
