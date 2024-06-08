@@ -152,6 +152,16 @@ def get_by_id(id: int):
 
     return next((Course.from_query_result(*row) for row in data), None)
 
+def sorting(courses: list[CoursesTagsResponeModel], *, attribute='', reverse=False):
+    if attribute == 'title':
+        def sorting_fn(c: CoursesTagsResponeModel): return c.title
+    elif attribute != 'title' and attribute != None:
+        def sorting_fn(c: CoursesTagsResponeModel): return c.tags if attribute in c.tags else c.tags
+    else:
+        def sorting_fn(c: CoursesTagsResponeModel): return c.id
+
+    return sorted(courses, key=sorting_fn, reverse=reverse)
+
 def get_course_authorID(course_id:int):
     data = read_query('''select author_id
                         from courses

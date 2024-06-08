@@ -1,6 +1,4 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Section
-from services import sections_service
 
 def create(student_id, sections_id):
     insert_query(

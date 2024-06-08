@@ -16,7 +16,7 @@ def send_email(receiver_email:str, user_email:str, user_id:int):
     message = f'''\
 Subject: Approval needed\n
         User with ID: {user_id}. and email {user_email} waiting for approval!
-        You can approve his register with click on the link http://127.0.0.1:8000/users/login
+        Please login into your account and aprove it!
         '''
 
     with smtplib.SMTP_SSL(host, port, context=context) as server:
@@ -39,7 +39,7 @@ def send_multiple_email(recipients_emails:list[str], user_email:str, user_id:int
 
     message = MIMEText(f'''
         User with ID: user_id. and email user_email waiting for approval!
-        You can approve his register with click on the link
+        Please login into your account and aprove it!
         ''')
     message['Subject'] = 'Aproval needed'
     message["From"] = username

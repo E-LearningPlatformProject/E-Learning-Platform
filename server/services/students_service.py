@@ -1,6 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Enrollments, StudentInfo, Students, CreateCourse
-from hashlib import sha256
+from data.models import Enrollments, StudentInfo
 
 def change_account_info(old: StudentInfo, new: StudentInfo):
     merged = StudentInfo(
