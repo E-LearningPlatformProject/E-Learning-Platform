@@ -29,7 +29,7 @@ class UsersService_Should(unittest.TestCase):
     def test_find_teacher_info(self, mock_read_query):
         # Arrange
         mock_read_query.return_value = [(1, 'teacher@abc.com', 'password', 'teacher', 'George', 'George', '0887301408',
-                                         'GGeorge', 'true')]
+                                         'GGeorge', 'true', 'image')]
         # Act
         teacher = users_service.find_teacher_info('teacher@abc.com')
         # Assert
@@ -65,7 +65,7 @@ class UsersService_Should(unittest.TestCase):
         # Arrange
         mock_insert_query.return_value = 1
         # Act
-        user = users_service.create_teacher('teacher@abc.com', 'password', 'George', 'George', "0887301408", 'GGeorge')
+        user = users_service.create_teacher('teacher@abc.com', 'password', 'George', 'George', "0887301408", 'GGeorge', 'image')
         # Assert
         self.assertEqual(user.email, 'teacher@abc.com')
 

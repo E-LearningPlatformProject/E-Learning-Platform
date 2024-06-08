@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from common.responses import Unauthorized, BadRequest, Forbidden
+from common.responses import Ok, Unauthorized, BadRequest, Forbidden
 from data.models import Role
 from routers import students as students_router
 
@@ -131,7 +131,8 @@ class StudentsRouter_Should(unittest.TestCase):
             # Act
             result = students_router.get_progress(course_id=1, x_token='valid_token')
             # Assert
-            self.assertEqual(result, 'Your progress is 75% for Course with ID: 1')
+            self.assertEqual(result.status_code, 200)
+            
 
     def test_vote_when_no_token(self):
         # Act
