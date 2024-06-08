@@ -12,7 +12,7 @@ class TagsService_Sould(unittest.TestCase):
         mock_read_query.return_value = [(1, 'title')]
         mock_tag = Tag(id=1, title='title')
         mock_course = Course(id=1, title='title', description='description', level='premium', hidden=False,
-                             author_id=1, tags=None)
+                            image='image', author_id=1, tags=None)
         # Act
         tags_service.get_tags_by_course_id(mock_course.id)
         # Assert

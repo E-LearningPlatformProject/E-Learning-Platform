@@ -38,7 +38,7 @@ class StudentsService_Should(unittest.TestCase):
         mock_insert_query.return_value = 1
         mock_student = Students(id=1, users_id=1, first_name='Peter', last_name='Peter')
         mock_course = Course(id=1, title='title', description='description', level='premium', hidden=False,
-                             author_id=mock_student.id, tags=None)
+                            image='image', author_id=mock_student.id, tags=None)
         # Act
         students_service.enroll_student(mock_course.id, mock_student.id)
         # Assert
@@ -50,7 +50,7 @@ class StudentsService_Should(unittest.TestCase):
         mock_read_query.return_value = [(1, 1)]
         mock_student = Students(id=1, users_id=1, first_name='Peter', last_name='Peter')
         mock_course = Course(id=1, title='title', description='description', level='premium', hidden=False,
-                             author_id=mock_student.id, tags=None)
+                            image='image', author_id=mock_student.id, tags=None)
         # Act
         students_service.check_if_student_is_enrolled(mock_course.id, mock_student.id)
         # Assert

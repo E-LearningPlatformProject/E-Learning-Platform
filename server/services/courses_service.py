@@ -115,6 +115,7 @@ def update(old: Course, new: Course):
         description=new.description or old.description,
         level=new.level or old.level,
         hidden= new.hidden or old.hidden,
+        image=new.image or old.image,
         author_id=old.author_id,
         tags = new.tags or old.tags
         )
@@ -122,10 +123,10 @@ def update(old: Course, new: Course):
     update_query(
         '''UPDATE Courses
          SET
-           title = ?, description = ?, level = ?, hidden = ?
+           title = ?, description = ?, level = ?, hidden = ?, image = ?
            WHERE id = ? 
         ''',
-        (merged.title, merged.description, merged.level,merged.hidden, merged.id))
+        (merged.title, merged.description, merged.level,merged.hidden, merged.image, merged.id))
 
     if new.tags != old.tags:
         tags_service.delete(old.id)

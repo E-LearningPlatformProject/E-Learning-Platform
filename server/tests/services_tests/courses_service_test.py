@@ -9,9 +9,9 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_all_non_premium(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', None)]
+        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', 'image', None)]
         mock_course = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                                  level='non_premium', tags=None )
+                                                  level='non_premium', image='image', tags=None )
         # Act
         course = courses_service.all_non_premium()
         # Assert
@@ -20,11 +20,11 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_all_non_premium_with_search(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(2, 'title2', 'description2', 'non_premium', None)]
+        mock_read_query.return_value = [(2, 'title2', 'description2', 'non_premium', 'image2', None)]
         mock_course1 = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                                  level='non_premium', tags=None)
+                                                  level='non_premium', image= 'image1', tags=None)
         mock_course2 = CoursesTagsResponeModel(id=2, title='title2', description='description2',
-                                               level='non_premium', tags=None)
+                                               level='non_premium', image= 'image2', tags=None)
         # Act
         course = courses_service.all_non_premium('title2')
         # Assert
@@ -33,9 +33,9 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_all_non_hidden(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', None)]
+        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', 'image2', None)]
         mock_course = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                              level='non_premium', tags=None)
+                                              level='non_premium', image= 'image2', tags=None)
         # Act
         course = courses_service.all_non_hidden()
         # Assert
@@ -44,11 +44,11 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_all_non_hidden_with_search(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(2, 'title2', 'description2', 'non_premium', None)]
+        mock_read_query.return_value = [(2, 'title2', 'description2', 'non_premium', 'image2',None)]
         mock_course1 = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                               level='non_premium', tags=None)
+                                               level='non_premium', image='image1', tags=None)
         mock_course2 = CoursesTagsResponeModel(id=2, title='title2', description='description2',
-                                               level='non_premium', tags=None)
+                                               level='non_premium', image='image2',tags=None)
         # Act
         course = courses_service.all_non_hidden('title2')
         # Assert
@@ -57,9 +57,9 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_all(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', None)]
+        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', 'image', None)]
         mock_course = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                              level='non_premium', tags=None)
+                                              level='non_premium', image= 'image', tags=None)
         # Act
         course = courses_service.all()
         # Assert
@@ -68,11 +68,11 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_all_with_search(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(2, 'title2', 'description2', 'non_premium', None)]
+        mock_read_query.return_value = [(2, 'title2', 'description2', 'non_premium', 'image2', None)]
         mock_course1 = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                               level='non_premium', tags=None)
+                                               level='non_premium', image= 'image1', tags=None)
         mock_course2 = CoursesTagsResponeModel(id=2, title='title2', description='description2',
-                                               level='non_premium', tags=None)
+                                               level='non_premium', image='image2', tags=None)
         # Act
         course = courses_service.all('title2')
         # Assert
@@ -81,9 +81,9 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_t_private(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', None)]
+        mock_read_query.return_value = [(1, 'title', 'description', 'non_premium', 'image', None)]
         mock_course = CoursesTagsResponeModel(id=1, title='title', description='description',
-                                              level='non_premium', tags=None)
+                                              level='non_premium', image='image', tags=None)
         # Act
         course = courses_service.t_private(1)
         # Assert
@@ -113,6 +113,7 @@ class CoursesService_Sould(unittest.TestCase):
             role='teacher',
             level='non_private',
             hidden=False,
+            image='image',
             author_id=1,
             tags=None)
 
@@ -123,6 +124,7 @@ class CoursesService_Sould(unittest.TestCase):
             role='teacher',
             level='non_private',
             hidden=True,
+            image='new_image',
             author_id=1,
             tags='tag1')
         # Act
@@ -132,6 +134,7 @@ class CoursesService_Sould(unittest.TestCase):
         self.assertEqual(result.description, new_info.description)
         self.assertEqual(result.hidden, new_info.hidden)
         self.assertEqual(result.tags, new_info.tags)
+        self.assertEqual(result.image, new_info.image)
 
     @patch('services.courses_service.read_query')
     def test_exists(self, mock_read_query):
@@ -145,7 +148,7 @@ class CoursesService_Sould(unittest.TestCase):
     @patch('services.courses_service.read_query')
     def test_get_by_id(self, mock_read_query):
         # Arrange
-        mock_read_query.return_value = [(1, 'title', 'description', 'non_private', False, 1, 'tag1,tag2')]
+        mock_read_query.return_value = [(1, 'title', 'description', 'non_private', False, 'image', 1, 'tag1,tag2')]
 
         expected_course = Course(
             id=1,
@@ -153,6 +156,7 @@ class CoursesService_Sould(unittest.TestCase):
             description='description',
             level='non_private',
             hidden=False,
+            image='image',
             author_id=1,
             tags='tag1,tag2')
         # Act
@@ -171,6 +175,7 @@ class CoursesService_Sould(unittest.TestCase):
             description='description',
             level='non_private',
             hidden=False,
+            image='image',
             author_id=1,
             tags='tag1,tag2')
         # Act
@@ -188,6 +193,7 @@ class CoursesService_Sould(unittest.TestCase):
             description='description',
             level='non_private',
             hidden=True,
+            image='image',
             author_id=1,
             tags='tag1,tag2')
         # Act
