@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from common.responses import Ok, Unauthorized, BadRequest, Forbidden
+from common.responses import Unauthorized, BadRequest, Forbidden
 from data.models import Role
 from routers import students as students_router
 
