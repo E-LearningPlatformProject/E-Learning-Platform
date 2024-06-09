@@ -8,21 +8,6 @@ from services import courses_service, sections_service, progress_service, studen
 
 section_router = APIRouter(prefix='/sections', tags=['Sections'])
 
-#@section_router.get('/{course_id}')
-#def get_sections(course_id:int, x_token: Optional[str] = Header(None)):
-#    if not x_token:
-#        return Unauthorized('You are not authorized!')
-#    
-#    user = get_user_or_raise_401(x_token)
-#
-#    if not courses_service.exists(course_id):
-#        return BadRequest(F'Course with ID: {course_id} doesn\'t exist!')
-#    
-#    if courses_service.is_hidden(course_id) and user.role == Role.STUDENT:
-#        return Forbidden('You don\'t have permission to view those sections!')
-#    
-#    return sections_service.get_sections(course_id)
-
 @section_router.get('/{section_id}', response_model = Section)
 def get_section(section_id:int, x_token: Optional[str] = Header(None)):
     

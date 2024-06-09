@@ -4,12 +4,8 @@ from common.responses import BadRequest
 from data.models import LoginData, Students, Teachers, User, AdminEmail
 from services import users_service, teachers_service
 from data.send_mail import send_email
-from pathlib import Path
-from fastapi.responses import FileResponse
-
 
 users_router = APIRouter(prefix='/users', tags=['Users'])
-
 
 @users_router.post('/login')
 def login(data: LoginData):
@@ -30,9 +26,6 @@ def user_info(x_token: str | None = Header()):
     
     user = get_user_or_raise_401(x_token)
 
-    image = Path(user.image)
-    
-    image_res = FileResponse(image)
     return  user
 
 

@@ -5,6 +5,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
 -- Schema e-learning
 -- -----------------------------------------------------
 
@@ -21,17 +24,19 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(220) NOT NULL,
-  `is_admin` TINYINT NOT NULL DEFAULT 0,
+  `is_admin` TINYINT(4) NOT NULL DEFAULT 0,
+  `role` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 22
 DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `e-learning`.`teachers_additinal_info`
+-- Table `e-learning`.`teachers`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `e-learning`.`teachers_additinal_info` (
+CREATE TABLE IF NOT EXISTS `e-learning`.`teachers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `phone_number` INT(11) NOT NULL,
   `linked_in_account` VARCHAR(45) NOT NULL,
@@ -39,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`teachers_additinal_info` (
   `users_id` INT(11) NOT NULL,
   `first_name` VARCHAR(45) NOT NULL,
   `last_name` VARCHAR(45) NOT NULL,
-  `image` BLOB NULL DEFAULT NULL,
+  `image` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `phone_number_UNIQUE` (`phone_number` ASC) VISIBLE,
   UNIQUE INDEX `linked_in_account_UNIQUE` (`linked_in_account` ASC) VISIBLE,
@@ -50,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`teachers_additinal_info` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -61,17 +67,19 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`courses` (
   `title` VARCHAR(60) NOT NULL,
   `description` TEXT NOT NULL,
   `level` VARCHAR(20) NOT NULL,
-  `image` BLOB NULL DEFAULT NULL,
+  `hidden` TINYINT(4) NOT NULL DEFAULT 1,
+  `image` TEXT NULL DEFAULT NULL,
   `author_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `title_UNIQUE` (`title` ASC) VISIBLE,
   INDEX `fk_courses_teachers_additinal_info1_idx` (`author_id` ASC) VISIBLE,
   CONSTRAINT `fk_courses_teachers_additinal_info1`
     FOREIGN KEY (`author_id`)
-    REFERENCES `e-learning`.`teachers_additinal_info` (`id`)
+    REFERENCES `e-learning`.`teachers` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 33
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -83,6 +91,7 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`tags` (
   `title` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -125,6 +134,7 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`students` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -168,6 +178,7 @@ CREATE TABLE IF NOT EXISTS `e-learning`.`sections` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8mb4;
 
 

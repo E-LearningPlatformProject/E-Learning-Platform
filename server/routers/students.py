@@ -17,7 +17,7 @@ def update_student_info(student: StudentInfo,  x_token: Optional[str] = Header(N
     return students_service.change_account_info(existing_student, student)
 
     
-@students_router.post('/enrolment/{course_id}', response_model= Enrollments)
+@students_router.post('/enrolment/{course_id}')
 def enroll_student_into_course(course_id: int, x_token: Optional[str] = Header(None)):
     if not x_token:
         return Unauthorized('You should have registration!')
@@ -82,7 +82,5 @@ def vote(vote:Vote, x_token: Optional[str] = Header(None)):
     else:
         return Forbidden('Only students can vote!')
     
-@students_router.get('/avg_rating/{course_id}')
-def get_avg(course_id):
-    return ratings_service.average_rating(course_id)
+
 

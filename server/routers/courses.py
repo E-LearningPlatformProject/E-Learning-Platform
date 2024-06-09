@@ -106,8 +106,7 @@ def update_courses(course:Course, course_id:int, x_token: Optional[str] = Header
     
     course = courses_service.update(old_course, course)
 
-    return course
-    
+    return course 
 
 
 @courses_router.delete('/{course_id}')
@@ -134,3 +133,10 @@ def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
     courses_service.delete(course_id)
     
     return Ok(content= f'Course №{course.id} removed!')
+
+@courses_router.get('/avg_rating/{course_id}')
+def get_avg(course_id, x_token: Optional[str] = Header(None)):
+    if not x_token:
+        return Unauthorized('You should have registration!')
+    
+    return ratings_service.average_rating(course_id)

@@ -1,8 +1,8 @@
 from typing import Optional
 from fastapi import APIRouter, Header
 from common.auth import get_user_or_raise_401
-from common.responses import BadRequest, NotFound, Unauthorized
-from data.models import LoginData, StudentInfo, Students, TeacherInfo, Teachers, User
+from common.responses import Unauthorized
+from data.models import TeacherInfo
 from services import teachers_service
 
 teachers_router = APIRouter(prefix='/teachers', tags=['Teachers'])
