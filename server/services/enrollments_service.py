@@ -12,6 +12,5 @@ def find_enrolled_students_in_course(course_id):
                       where e.courses_id = ?''',(course_id,))
     
     students_email = [e[0] for e in data]
-    print(students_email)
 
     return students_email
