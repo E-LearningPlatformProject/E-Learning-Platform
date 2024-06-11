@@ -1,14 +1,10 @@
 from typing import Optional
 from fastapi import APIRouter, Header
-from pydantic import BaseModel
 from common.responses import BadRequest, Forbidden, NotFound, Unauthorized, Ok
 from common.auth import get_user_or_raise_401
 from services import courses_service, teachers_service, sections_service, enrollments_service, ratings_service, tags_service, progress_service
 from data.models import Role, CreateCourse, Course, CourseSectionsResponseModel, CoursesTagsResponeModel
-from data.send_mail import send_email
-from PIL import Image
-from fastapi.responses import FileResponse
-from pathlib import Path
+from data.send_mail import send_multiple_email
 
 
 courses_router = APIRouter(prefix='/courses', tags=['Courses'])
@@ -125,12 +121,15 @@ def remove_course(course_id:int, x_token: Optional[str] = Header(None)):
     if user.role == Role.TEACHER and user.id != courses_service.get_course_authorID(course_id):
         return Forbidden('Only the author of this course can delete it!')
     
+    students_email = enrollments_service.find_enrolled_students_in_course(course_id)
     progress_service.delete_by_course_id(course_id)
     sections_service.delete_by_course_id(course_id)
     enrollments_service.delete(course_id)
     ratings_service.delete(course_id)
     tags_service.delete(course_id)
     courses_service.delete(course_id)
+
+    send_multiple_email(students_email, course.title)
     
     return Ok(content= f'Course №{course.id} removed!')
 

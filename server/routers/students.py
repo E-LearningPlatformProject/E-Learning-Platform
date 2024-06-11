@@ -29,7 +29,7 @@ def enroll_student_into_course(course_id: int, x_token: Optional[str] = Header(N
     if existing_student.role != Role.STUDENT:
         return Forbidden('You should be a student to enroll!')
     
-    send_email(teachers_service.get_teacher_email(course_id),existing_student.email, existing_student.id)
+    send_email(teachers_service.get_teacher_email(course_id),existing_student.email)
    
     return students_service.enroll_student(course_id, existing_student.id)
 

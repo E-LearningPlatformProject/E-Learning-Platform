@@ -8,15 +8,22 @@ Design and implement a E-Learning Platform and provide RESTful API that can be c
 - Teachers would publish the courses
 - Courses can get rating
 
+## 2. Technologies
+ - Python
+ - FastAPI 
+ - MariaDB
+ - RESTful
+ - MySQL
 
-## 2. API Architecture
+
+## 3. API Architecture
 
 -    ![Alt text](MVC.png)
 
 ### 1) The folder `data` represent Model
 ### 2) Controller is split between application layer(`routers`) and business logic(`services`)
 
-## 3. Instructions on how to setup and run the project locally
+## 4. Instructions on how to setup and run the project locally
 
 ### 1) You need to have MariaDb server . You can install it from here - https://mariadb.org/download/?t=mariadb&p=mariadb&r=11.3.2
 
@@ -46,10 +53,12 @@ As well you need to set a key word that is used to create secure tokens in file 
 As well you need to add your google email on lines 10 and 31.
 - `username = getenv('EMAIL')`
 
-### 6) When you are ready with the instructions above you need to be in the folder where is the `main.py` file to start your server. You can use the command.
+### 6) In file `data/models` in class `Route` on line 268 you have to change the path that lead in your computer to folder `models/teacher_images` .
+
+### 7) When you are ready with the instructions above you need to be in the folder where is the `main.py` file to start your server. You can use the command.
 - `uvicorn main:app`
 
-### 7) Once your server is on you can use `Postman` or your browser to check the functionality of the API
+### 8) Once your server is on you can use `Postman` or your browser to check the functionality of the API
 - `https://www.postman.com/downloads/`
 - `http://127.0.0.1:8000/docs`
 
@@ -58,7 +67,7 @@ As well you need to add your google email on lines 10 and 31.
 
 -    ![Alt text](schema.png)
 
-## 4. End Points
+## 5. End Points
 
 ### `Users`
 
