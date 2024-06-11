@@ -3,7 +3,7 @@ from common.auth import get_user_or_raise_401
 from common.responses import BadRequest
 from data.models import LoginData, Students, Teachers, User, AdminEmail
 from services import users_service, teachers_service
-from data.send_mail import send_email
+from data.send_mail import send_email, send_multiple_email
 
 users_router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -62,6 +62,6 @@ def register(user_data: User, teacher_data: Teachers):
             return BadRequest(content= 'Password should be between 6 and 30 symbols.')
         
     if user:
-        send_email(AdminEmail._EMAIL, user_data.email, user.id)
+        send_email(AdminEmail._EMAIL, user_data.email)
     
     return user or BadRequest(f'Email {user_data.email} is taken.')

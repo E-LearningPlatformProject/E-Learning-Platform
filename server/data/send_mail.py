@@ -2,8 +2,7 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from os import getenv
 
-
-def send_email(receiver_email:str, user_email:str, user_id:int):
+def send_email(receiver_email:str, user_email:str):
     host = 'smtp.gmail.com'
     port = 465
 
@@ -15,7 +14,7 @@ def send_email(receiver_email:str, user_email:str, user_id:int):
 
     message = f'''\
 Subject: Approval needed\n
-        User with ID: {user_id}. and email {user_email} waiting for approval!
+        User with email {user_email} waiting for approval!
         Please login into your account and aprove it!
         '''
 
@@ -24,31 +23,26 @@ Subject: Approval needed\n
         server.sendmail(username, receiver, message)
 
 
-def send_multiple_email(recipients_emails:list[str], user_email:str, user_id:int):
+def send_multiple_email(recipients_emails:list[str], course_title:str):
     host = 'smtp.gmail.com'
     port = 587
 
     username = getenv('EMAIL')
     password =getenv('APPKEY_eLearning')
 
-    #recipients = " .".join(recipients)
-    recipients = [
-   "rdimitrov877@gmail.com",
-   "rd94@icloud.com"
-   ]
+    #recipients = " .".join(recipients_emails)
 
     message = MIMEText(f'''
-        User with ID: user_id. and email user_email waiting for approval!
-        Please login into your account and aprove it!
+        Course {course_title} has been deleted from E-Learning!
         ''')
-    message['Subject'] = 'Aproval needed'
+    message['Subject'] = 'Removed Course'
     message["From"] = username
-    message["To"] = " .".join(recipients)
+    message["To"] = " ,".join(recipients_emails)
 
     server = smtplib.SMTP(host, port)
     server.starttls()
     server.login(username, password)
-    server.sendmail(username, recipients, message.as_string())
+    server.sendmail(username, recipients_emails, message.as_string())
     server.quit()
 
 
