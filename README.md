@@ -8,15 +8,22 @@ Design and implement a E-Learning Platform and provide RESTful API that can be c
 - Teachers would publish the courses
 - Courses can get rating
 
+## 2. Technologies
+ - Python
+ - FastAPI 
+ - MariaDB
+ - RESTful
+ - MySQL
 
-## 2. API Architecture
+
+## 3. API Architecture
 
 -    ![Alt text](MVC.png)
 
 ### 1) The folder `data` represent Model
 ### 2) Controller is split between application layer(`routers`) and business logic(`services`)
 
-## 3. Instructions on how to setup and run the project locally
+## 4. Instructions on how to setup and run the project locally
 
 ### 1) You need to have MariaDb server . You can install it from here - https://mariadb.org/download/?t=mariadb&p=mariadb&r=11.3.2
 
@@ -60,7 +67,7 @@ As well you need to add your google email on lines 10 and 31.
 
 -    ![Alt text](schema.png)
 
-## 4. End Points
+## 5. End Points
 
 ### `Users`
 
