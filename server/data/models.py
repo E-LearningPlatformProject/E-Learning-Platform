@@ -20,7 +20,7 @@ class Role:
 
 class User(BaseModel):
     id: int | None = Field(examples=[8])
-    email:str = Field(examples=["ivan0198@abv.bg"])
+    email:str = Field(examples=["dimitar0198@abv.bg"])
     password: str = Field(examples=["123456"])
     role:str = Field(examples=["teacher / student"])
 
@@ -51,11 +51,11 @@ class User(BaseModel):
     
 class Teachers(BaseModel):
     id:int = Field(examples=["3"])
-    phone_number:int = Field(examples=["003598977658765"])
-    linked_in_account:str = Field(examples=["https://www.linkedin.com/in/ivanivanov"])
+    phone_number:int = Field(examples=["035989712"])
+    linked_in_account:str = Field(examples=["https://www.linkedin.com/in/dimitarivanov"])
     is_approved:bool = Field(examples=[True])
     users_id:int = Field(examples=["8"])
-    first_name:str = Field(examples=["Ivan"])
+    first_name:str = Field(examples=["Dimitar"])
     last_name:str = Field(examples=["Ivanov"])
     image: str = Field(examples=["PATH/image.png"])
     
@@ -113,7 +113,7 @@ class TeacherInfo(BaseModel):
     role: str = Field(examples=["teacher"])
     first_name: str = Field(examples=["Angel"])
     last_name: str = Field(examples=["Ivanov"])
-    phone_number: int = Field(examples=["00545356355"])
+    phone_number: int = Field(examples=["005456355"])
     linked_in_account: str = Field(examples=["https://www.linkedin.com/in/ivanov"])
     is_approved: bool = Field(examples=[True])
     image : str = Field(examples=["PATH/image.png"])
